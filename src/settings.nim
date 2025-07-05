@@ -5,6 +5,10 @@ type GameScenes = enum
     LOGO, MENU, CHARACTER_SELECTION
 
 const
+    baseWidth = 800
+    baseHeight = 600
+
+const
     SYSTEM_FONTS = getSystemFonts()
 
 var
@@ -15,6 +19,10 @@ var
 
 proc updateVars() =
     WINDOW_CENTER = Vector2(x: getScreenWidth() / 2, y: getScreenHeight() / 2)
+    when defined(emscripten):
+        let scaleX = getScreenWidth().float / baseWidth.float
+        let scaleY = getScreenHeight().float / baseHeight.float
+        setMouseScale(scaleX, scaleY)
 
 const
     NIM_LOGO_RAW = staticRead("assets/images/logos/nim.png")

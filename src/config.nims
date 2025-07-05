@@ -8,7 +8,12 @@ import os
 
 const AndroidApiVersion {.intdefine.} = 33
 const AndroidNdk {.strdefine.} = "/opt/android-ndk"
-const AndroidToolchain = AndroidNdk / "toolchains/llvm/prebuilt/linux-x86_64"
+when buildOS == "windows":
+  const AndroidToolchain = AndroidNdk / "toolchains/llvm/prebuilt/windows-x86_64"
+elif buildOS == "linux":
+  const AndroidToolchain = AndroidNdk / "toolchains/llvm/prebuilt/linux-x86_64"
+elif buildOS == "macosx":
+  const AndroidToolchain = AndroidNdk / "toolchains/llvm/prebuilt/darwin-x86_64"
 const AndroidSysroot = AndroidToolchain / "sysroot"
 
 when defined(android):
@@ -30,11 +35,12 @@ when defined(android):
 
   switch("clang.path", AndroidToolchain / "bin")
   switch("clang.cpp.path", AndroidToolchain / "bin")
-  switch("clang.options.always", "-Oz -flto -fdata-sections -ffunction-sections -flto --target=" & AndroidTarget & " --sysroot=" & AndroidSysroot &
+  switch("clang.options.always", "--target=" & AndroidTarget & " --sysroot=" & AndroidSysroot &
          " -I" & AndroidSysroot / "usr/include" &
          " -I" & AndroidSysroot / "usr/include" / AndroidTriple & " " & AndroidAbiFlags &
          " -D__ANDROID__ -D__ANDROID_API__=" & $AndroidApiVersion)
-  switch("clang.options.linker", "-flto -fvisibility=hidden -flto --target=" & AndroidTarget & " -shared " & AndroidAbiFlags)
+  switch("clang.options.linker", "--target=" & AndroidTarget & " -shared " & AndroidAbiFlags)
+
   --define:androidNDK
 
 elif defined(emscripten):

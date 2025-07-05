@@ -31,8 +31,8 @@ proc toValue(x: GlEsVersion): string =
 
 # Define Android architecture (armeabi-v7a, arm64-v8a, x86, x86-64), GLES and API version
 const
-  AndroidApiVersion = 35..35
-  AndroidCPUs = [arm]
+  AndroidApiVersion = 21..34
+  AndroidCPUs = [arm, arm64]
   AndroidGlEsVersion = openglEs20
 
 # Required path variables
@@ -44,9 +44,9 @@ const
 
 # Android project configuration variables
 const
-  ProjectName = "dark_rogue"
+  ProjectName = "raylib_game"
   AppCompanyTld = "com"
-  AppCompanyName = "nilite"
+  AppCompanyName = "raylib"
   AppProductName = "rgame"
   AppVersionCode = 1
   AppVersionName = "1.0"
@@ -109,7 +109,7 @@ task setupAndroid, "Prepare raylib project for Android development":
 
 task buildAndroid, "Compile and package raylib project for Android":
   for cpu in AndroidCPUs:
-    exec("nim c -d:danger --opt:size -d:strip --os:android --passC:'-Oz -flto -fdata-sections -ffunction-sections' --passL:'-flto -fvisibility=hidden' --cpu:" & $cpu & " -d:AndroidApiVersion=" & $AndroidApiVersion.a &
+    exec("nim c -d:release --os:android --cpu:" & $cpu & " -d:AndroidApiVersion=" & $AndroidApiVersion.a &
         " -d:AndroidNdk=" & AndroidNdk & " -d:" & $AndroidGlEsVersion &
         " -o:" & "android/app/src/main/jniLibs" / cpu.toArchName / ("lib" & ProjectLibraryName & ".so") &
         " --nimcache:" & nimcacheDir().parentDir / (ProjectName & "_" & $cpu) & " " & ProjectSourceFile)
