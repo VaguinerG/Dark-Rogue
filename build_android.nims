@@ -32,7 +32,7 @@ proc toValue(x: GlEsVersion): string =
 # Define Android architecture (armeabi-v7a, arm64-v8a, x86, x86-64), GLES and API version
 const
   AndroidApiVersion = 21..34
-  AndroidCPUs = [arm, arm64]
+  AndroidCPUs = [arm]
   AndroidGlEsVersion = openglEs20
 
 # Required path variables
@@ -44,10 +44,10 @@ const
 
 # Android project configuration variables
 const
-  ProjectName = "raylib_game"
+  ProjectName = "dark_rogue"
   AppCompanyTld = "com"
-  AppCompanyName = "raylib"
-  AppProductName = "rgame"
+  AppCompanyName = "vaguinerg"
+  AppProductName = "darkrogue"
   AppVersionCode = 1
   AppVersionName = "1.0"
   ProjectLibraryName = "main"
@@ -63,7 +63,7 @@ const
 # Android app configuration variables
 type MipmapDpi = enum mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi
 const iconSize = [mdpi: (48, 108), hdpi: (72, 162), xhdpi: (96, 216), xxhdpi: (144, 324), xxxhdpi: (192, 432)]
-const AppLabelName = "rGame"
+const AppLabelName = "Dark Rogue"
 
 
 task setupAndroid, "Prepare raylib project for Android development":
@@ -109,7 +109,7 @@ task setupAndroid, "Prepare raylib project for Android development":
 
 task buildAndroid, "Compile and package raylib project for Android":
   for cpu in AndroidCPUs:
-    exec("nim c -d:release --os:android --cpu:" & $cpu & " -d:AndroidApiVersion=" & $AndroidApiVersion.a &
+    exec("nim c -d:danger --opt:size -d:release --os:android --cpu:" & $cpu & " -d:AndroidApiVersion=" & $AndroidApiVersion.a &
         " -d:AndroidNdk=" & AndroidNdk & " -d:" & $AndroidGlEsVersion &
         " -o:" & "android/app/src/main/jniLibs" / cpu.toArchName / ("lib" & ProjectLibraryName & ".so") &
         " --nimcache:" & nimcacheDir().parentDir / (ProjectName & "_" & $cpu) & " " & ProjectSourceFile)
