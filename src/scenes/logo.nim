@@ -16,5 +16,13 @@ proc drawLogoScene() =
 
     let tint = Color(r: 255, g: 255, b: 255, a: uint8(alpha * 255))
 
-    for i, logo in @[addr NIM_LOGO, addr RAYLIB_LOGO].pairs:
-        drawTexture(logo[], int32 i * 200, 0, tint)
+    let logos = @[addr NIM_LOGO, addr RAYLIB_LOGO]
+
+    let
+        maxWidth = logos.mapIt(it.width).max
+        totalWidth = maxWidth * logos.len
+        startX = (getScreenWidth() - totalWidth) div 2
+
+    for i, logo in logos.pairs:
+        let x = startX + i * maxWidth
+        drawTexture(logo[], x.int32, WINDOW_CENTER.y.int32, tint)
