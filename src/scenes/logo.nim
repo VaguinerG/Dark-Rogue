@@ -1,9 +1,10 @@
 var
-  sceneDuration = 4.0
-  fadeDuration = sceneDuration / 2.0
+    sceneBaseDuration = 4.0
+    sceneDuration = sceneBaseDuration
+    fadeDuration = sceneDuration / 2.0
 
 proc drawLogoScene() =
-    if sceneDuration == 5.0: sceneDuration += getTime()
+    if sceneDuration == sceneBaseDuration: sceneDuration += getTime()
     let currentTime = getTime()
 
     if currentTime >= sceneDuration or isMouseButtonPressed(LEFT):
@@ -32,7 +33,9 @@ proc drawLogoScene() =
             x: getScreenWidth().float / 2 - madeWithSize.x / 2,
             y: getScreenHeight().float - maxHeight.float - madeWithSize.y
         )
+    
     drawText(MENU_FONT, madeWithText, madeWithPos, madeWithTextSize, 0, tint)
+
     for i, logo in logos.pairs:
         let x = startX + i * maxWidth
         drawTexture(logo[], x.int32, getScreenHeight() - maxHeight, tint)
