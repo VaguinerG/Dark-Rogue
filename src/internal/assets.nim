@@ -1,5 +1,3 @@
-import os
-
 proc loadSystemFont() =
     if SYSTEM_FONTS.len > 0:
         try:
@@ -11,8 +9,8 @@ proc loadSystemFont() =
             discard
 
 proc loadLogoImages() =
-    NIM_LOGO = loadTextureFromImage(loadImageFromMemory(".png", cast[seq[uint8]](NIM_LOGO_RAW)))
-    RAYLIB_LOGO = loadTextureFromImage(loadImageFromMemory(".png", cast[seq[uint8]](RAYLIB_LOGO_RAW)))
+    NIM_LOGO = loadTextureFromImage(loadImageFromMemory(".png", NIM_LOGO_BYTES))
+    RAYLIB_LOGO = loadTextureFromImage(loadImageFromMemory(".png", RAYLIB_LOGO_BYTES))
 
 proc initAssets() =
     loadSystemFont()

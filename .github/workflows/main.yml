@@ -32,10 +32,29 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev freeglut3-dev
 
+      - name: Install UPX (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y upx
+
+      - name: Install UPX (Windows)
+        if: runner.os == 'Windows'
+        run: choco install upx
+
       - name: Compile desktop binary
         run: |
           nimble install naylib nimja https://github.com/planetis-m/naygui -y
           nim c src/main.nim
+
+      - name: Compress with UPX
+        run: |
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            echo "Skipped"
+          else
+            upx --version
+            upx --best --ultra-brute src/bin/*
+          fi
+        shell: bash
+          
 
       - name: Upload desktop binary
         uses: actions/upload-artifact@v4

@@ -6,4 +6,4 @@ proc drawMenuScreen() =
         height: 50
     )
     if button(playButtonRectangle, "Play"):
-        GAME_SCENE = CHARACTER_SELECTION
+        GAME_SCENE = CHAR_SELECTION

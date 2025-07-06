@@ -1,0 +1,2 @@
+proc drawCharacterSelection =
+    discard
