@@ -1,217 +1,513 @@
 { "frames": {
-   "spritesheet 0.png": {
-    "frame": { "x": 43, "y": 42, "w": 33, "h": 37 },
+   "arcane_archer 0.aseprite": {
+    "frame": { "x": 0, "y": 82, "w": 33, "h": 37 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 18, "y": 7, "w": 33, "h": 37 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 1.png": {
-    "frame": { "x": 0, "y": 72, "w": 29, "h": 40 },
+   "arcane_archer 1.aseprite": {
+    "frame": { "x": 72, "y": 110, "w": 29, "h": 40 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 21, "y": 8, "w": 29, "h": 40 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 2.png": {
-    "frame": { "x": 112, "y": 96, "w": 35, "h": 32 },
+   "arcane_archer 2.aseprite": {
+    "frame": { "x": 101, "y": 135, "w": 35, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 20, "y": 16, "w": 35, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 3.png": {
-    "frame": { "x": 162, "y": 63, "w": 39, "h": 30 },
+   "arcane_archer 3.aseprite": {
+    "frame": { "x": 33, "y": 106, "w": 39, "h": 30 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 12, "y": 15, "w": 39, "h": 30 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 4.png": {
-    "frame": { "x": 60, "y": 104, "w": 35, "h": 30 },
+   "arcane_archer 4.aseprite": {
+    "frame": { "x": 173, "y": 160, "w": 35, "h": 30 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 9, "y": 14, "w": 35, "h": 30 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 5.png": {
-    "frame": { "x": 123, "y": 63, "w": 39, "h": 33 },
+   "arcane_archer 5.aseprite": {
+    "frame": { "x": 177, "y": 81, "w": 39, "h": 33 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 12, "y": 15, "w": 39, "h": 33 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 6.png": {
-    "frame": { "x": 162, "y": 93, "w": 35, "h": 32 },
+   "arcane_archer 6.aseprite": {
+    "frame": { "x": 25, "y": 136, "w": 35, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 20, "y": 16, "w": 35, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 7.png": {
-    "frame": { "x": 29, "y": 79, "w": 31, "h": 37 },
+   "arcane_archer 7.aseprite": {
+    "frame": { "x": 221, "y": 114, "w": 31, "h": 37 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 8, "w": 31, "h": 37 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 8.png": {
-    "frame": { "x": 195, "y": 0, "w": 20, "h": 34 },
+   "arcane_archer 8.aseprite": {
+    "frame": { "x": 142, "y": 176, "w": 20, "h": 34 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 18, "y": 14, "w": 20, "h": 34 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 9.png": {
-    "frame": { "x": 147, "y": 125, "w": 19, "h": 34 },
+   "arcane_archer 9.aseprite": {
+    "frame": { "x": 79, "y": 42, "w": 19, "h": 34 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 20, "y": 14, "w": 19, "h": 34 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 10.png": {
-    "frame": { "x": 166, "y": 125, "w": 20, "h": 32 },
+   "arcane_archer 10.aseprite": {
+    "frame": { "x": 186, "y": 190, "w": 20, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 20, "y": 16, "w": 20, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 11.png": {
-    "frame": { "x": 30, "y": 116, "w": 24, "h": 28 },
+   "arcane_archer 11.aseprite": {
+    "frame": { "x": 162, "y": 190, "w": 24, "h": 28 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 21, "y": 20, "w": 24, "h": 28 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 12.png": {
-    "frame": { "x": 95, "y": 128, "w": 35, "h": 10 },
+   "arcane_archer 12.aseprite": {
+    "frame": { "x": 59, "y": 198, "w": 35, "h": 10 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 38, "w": 35, "h": 10 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 13.png": {
-    "frame": { "x": 54, "y": 142, "w": 35, "h": 7 },
+   "arcane_archer 13.aseprite": {
+    "frame": { "x": 35, "y": 208, "w": 35, "h": 7 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 41, "w": 35, "h": 7 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 14.png": {
-    "frame": { "x": 54, "y": 134, "w": 35, "h": 8 },
+   "arcane_archer 14.aseprite": {
+    "frame": { "x": 94, "y": 202, "w": 35, "h": 8 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 40, "w": 35, "h": 8 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 15.png": {
-    "frame": { "x": 89, "y": 138, "w": 35, "h": 8 },
+   "arcane_archer 15.aseprite": {
+    "frame": { "x": 0, "y": 207, "w": 35, "h": 8 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 40, "w": 35, "h": 8 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 16.png": {
-    "frame": { "x": 152, "y": 0, "w": 43, "h": 32 },
+   "arcane_archer 16.aseprite": {
+    "frame": { "x": 136, "y": 146, "w": 37, "h": 30 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 15, "y": 18, "w": 37, "h": 30 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 17.aseprite": {
+    "frame": { "x": 25, "y": 192, "w": 34, "h": 15 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 33, "w": 34, "h": 15 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 18.aseprite": {
+    "frame": { "x": 206, "y": 193, "w": 25, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 25, "y": 29, "w": 25, "h": 19 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 19.aseprite": {
+    "frame": { "x": 115, "y": 176, "w": 27, "h": 26 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 14, "y": 22, "w": 27, "h": 26 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 20.aseprite": {
+    "frame": { "x": 25, "y": 168, "w": 30, "h": 24 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 14, "y": 24, "w": 30, "h": 24 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 21.aseprite": {
+    "frame": { "x": 224, "y": 47, "w": 31, "h": 32 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 15, "y": 16, "w": 31, "h": 32 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 22.aseprite": {
+    "frame": { "x": 122, "y": 104, "w": 38, "h": 31 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 16, "y": 17, "w": 38, "h": 31 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 23.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 24.aseprite": {
+    "frame": { "x": 134, "y": 41, "w": 43, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 17, "y": 16, "w": 43, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 17.png": {
-    "frame": { "x": 76, "y": 72, "w": 36, "h": 32 },
+   "arcane_archer 25.aseprite": {
+    "frame": { "x": 160, "y": 114, "w": 36, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 21, "y": 16, "w": 36, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 18.png": {
-    "frame": { "x": 0, "y": 116, "w": 30, "h": 31 },
+   "arcane_archer 26.aseprite": {
+    "frame": { "x": 85, "y": 167, "w": 30, "h": 31 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 22, "y": 17, "w": 30, "h": 31 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 19.png": {
-    "frame": { "x": 116, "y": 0, "w": 36, "h": 39 },
+   "arcane_archer 27.aseprite": {
+    "frame": { "x": 98, "y": 41, "w": 36, "h": 39 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 22, "y": 9, "w": 36, "h": 39 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 20.png": {
-    "frame": { "x": 41, "y": 0, "w": 39, "h": 42 },
+   "arcane_archer 28.aseprite": {
+    "frame": { "x": 185, "y": 39, "w": 39, "h": 42 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 20, "y": 6, "w": 39, "h": 42 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 21.png": {
-    "frame": { "x": 0, "y": 0, "w": 41, "h": 41 },
+   "arcane_archer 29.aseprite": {
+    "frame": { "x": 144, "y": 0, "w": 41, "h": 41 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 18, "y": 7, "w": 41, "h": 41 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 22.png": {
-    "frame": { "x": 80, "y": 0, "w": 36, "h": 41 },
+   "arcane_archer 30.aseprite": {
+    "frame": { "x": 0, "y": 41, "w": 36, "h": 41 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 19, "y": 7, "w": 36, "h": 41 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 23.png": {
-    "frame": { "x": 152, "y": 0, "w": 43, "h": 32 },
+   "arcane_archer 31.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 32.aseprite": {
+    "frame": { "x": 0, "y": 119, "w": 25, "h": 45 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 2, "w": 25, "h": 45 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 33.aseprite": {
+    "frame": { "x": 196, "y": 114, "w": 25, "h": 46 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 1, "w": 25, "h": 46 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 34.aseprite": {
+    "frame": { "x": 227, "y": 0, "w": 25, "h": 47 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 0, "w": 25, "h": 47 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 35.aseprite": {
+    "frame": { "x": 0, "y": 164, "w": 25, "h": 42 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 5, "w": 25, "h": 42 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 36.aseprite": {
+    "frame": { "x": 221, "y": 151, "w": 25, "h": 42 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 5, "w": 25, "h": 42 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 37.aseprite": {
+    "frame": { "x": 60, "y": 150, "w": 25, "h": 44 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 3, "w": 25, "h": 44 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 38.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 39.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 40.aseprite": {
+    "frame": { "x": 134, "y": 41, "w": 43, "h": 32 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 17, "y": 16, "w": 43, "h": 32 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 24.png": {
-    "frame": { "x": 80, "y": 41, "w": 43, "h": 31 },
+   "arcane_archer 41.aseprite": {
+    "frame": { "x": 36, "y": 75, "w": 43, "h": 31 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 17, "y": 17, "w": 43, "h": 31 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 25.png": {
-    "frame": { "x": 0, "y": 42, "w": 43, "h": 30 },
+   "arcane_archer 42.aseprite": {
+    "frame": { "x": 79, "y": 80, "w": 43, "h": 30 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 17, "y": 18, "w": 43, "h": 30 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    },
-   "spritesheet 26.png": {
-    "frame": { "x": 152, "y": 32, "w": 43, "h": 31 },
+   "arcane_archer 43.aseprite": {
+    "frame": { "x": 134, "y": 73, "w": 43, "h": 31 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 17, "y": 17, "w": 43, "h": 31 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 44.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 45.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 46.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 47.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 48.aseprite": {
+    "frame": { "x": 185, "y": 0, "w": 42, "h": 39 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 15, "y": 15, "w": 42, "h": 39 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 49.aseprite": {
+    "frame": { "x": 98, "y": 0, "w": 46, "h": 41 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 11, "y": 15, "w": 46, "h": 41 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 50.aseprite": {
+    "frame": { "x": 51, "y": 0, "w": 47, "h": 42 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 10, "y": 15, "w": 47, "h": 42 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 51.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 51, "h": 41 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 6, "y": 15, "w": 51, "h": 41 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 52.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 53.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 54.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 55.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 56.aseprite": {
+    "frame": { "x": 216, "y": 81, "w": 38, "h": 33 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 19, "y": 15, "w": 38, "h": 33 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 57.aseprite": {
+    "frame": { "x": 36, "y": 42, "w": 41, "h": 33 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 15, "w": 41, "h": 33 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 58.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 59.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 60.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 61.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 62.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "arcane_archer 63.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 1, "h": 1 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 1, "h": 1 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    }
@@ -221,17 +517,14 @@
   "version": "1.3.6-x64",
   "image": "spritesheet-sheet.png",
   "format": "RGBA8888",
-  "size": { "w": 215, "h": 159 },
+  "size": { "w": 255, "h": 222 },
   "scale": "1",
   "frameTags": [
    { "name": "RUN", "from": 0, "to": 7, "direction": "forward", "color": "#000000ff" },
    { "name": "DEATH", "from": 8, "to": 15, "direction": "forward", "color": "#000000ff" },
    { "name": "DASH", "from": 16, "to": 22, "direction": "forward", "color": "#000000ff" },
    { "name": "ATTACK1", "from": 24, "to": 30, "direction": "forward", "color": "#000000ff" },
-   { "name": "WALLSIDE", "from": 32, "to": 37, "direction": "forward", "color": "#000000ff" },
-   { "name": "IDLE", "from": 40, "to": 43, "direction": "forward", "color": "#000000ff" },
-   { "name": "DOUBLEJUMP", "from": 48, "to": 51, "direction": "forward", "color": "#000000ff" },
-   { "name": "JUMP", "from": 56, "to": 57, "direction": "forward", "color": "#000000ff" }
+   { "name": "IDLE", "from": 40, "to": 43, "direction": "forward", "color": "#000000ff" }
   ],
   "layers": [
    { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }
