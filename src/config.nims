@@ -4,6 +4,8 @@ import os
 --define:noSignalHandler
 --define:danger
 --define:strip
+--define:useMalloc
+--panics:on
 --opt:size
 
 const AndroidApiVersion {.intdefine.} = 33
@@ -66,5 +68,5 @@ elif defined(windows) or defined(linux):
   --cc:gcc
   --outdir:"src/bin/"
   --define:GraphicsApiOpenGl11
-  --passC:"-flto -fopt-info-vec-missed -fno-semantic-interposition -mfpmath=sse -fmerge-all-constants -fstrict-overflow -fno-wrapv -fvect-cost-model=unlimited -ftree-vectorize -floop-nest-optimize -fipa-pta -Ofast -march=native"
+  --passC:"-flto -fdevirtualize-at-ltrans -fno-semantic-interposition -mfpmath=sse -fmerge-all-constants -fstrict-overflow -fno-wrapv -fvect-cost-model=unlimited -ftree-vectorize -floop-nest-optimize -fipa-pta -Ofast -march=native"
   --passL:"-flto"
