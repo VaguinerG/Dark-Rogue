@@ -9,6 +9,7 @@ proc drawLogoScene() =
 
     if currentTime >= sceneDuration or isMouseButtonPressed(LEFT):
         for logo in logos.mitems:
+            # unload textures
             logo.texture = Texture2D()
         CURRENT_SCENE = MENU
         return

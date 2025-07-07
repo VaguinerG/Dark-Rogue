@@ -41,7 +41,7 @@ type
     scale*: float32 = 1.0
     
     # === Visual Effects ===
-    color*: Color = WHITE
+    color*: Color = Color(r: 255, g: 255, b: 255, a: 255)
     horizontalFlip*: bool = false
     verticalFlip*: bool = false
 
@@ -100,7 +100,7 @@ proc parseSpritesheetJson(jsonStr: string): Table[string, seq[Frame]] =
 proc loadAnimationData*(jsonStr: string, texture: var Texture): AnimationData =
   AnimationData(
     frames: parseSpritesheetJson(jsonStr),
-    texture: addr texture
+    texture: addr texture,
   )
 
 proc updateAnimation*(state: var AnimationState) =
