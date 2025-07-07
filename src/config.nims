@@ -6,6 +6,7 @@ import os
 --define:strip
 --define:useMalloc
 --panics:on
+--boundChecks:off
 --opt:size
 
 const AndroidApiVersion {.intdefine.} = 33

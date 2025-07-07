@@ -8,7 +8,9 @@ proc drawLogoScene() =
     let currentTime = getTime()
 
     if currentTime >= sceneDuration or isMouseButtonPressed(LEFT):
-        GAME_SCENE = MENU
+        for logo in logos.mitems:
+            logo.texture = Texture2D()
+        CURRENT_SCENE = MENU
         return
 
     let fadeInAlpha  = clamp(currentTime / fadeDuration, 0.0, 1.0)
@@ -17,11 +19,9 @@ proc drawLogoScene() =
 
     let tint = Color(r: 255, g: 255, b: 255, a: uint8(alpha * 255))
 
-    let logos = @[addr NIM_LOGO, addr RAYLIB_LOGO]
-
     let
-        maxWidth = logos.mapIt(it.width).max
-        maxHeight = logos.mapIt(it.height).max
+        maxWidth = logos.mapIt(it.texture.width).max
+        maxHeight = logos.mapIt(it.texture.height).max
         totalWidth = maxWidth * logos.len
         startX = (getScreenWidth() - totalWidth) div 2
 
@@ -33,9 +33,11 @@ proc drawLogoScene() =
             x: getScreenWidth().float / 2 - madeWithSize.x / 2,
             y: getScreenHeight().float - maxHeight.float - madeWithSize.y
         )
-    
-    drawText(MENU_FONT, madeWithText, madeWithPos, madeWithTextSize, 0, tint)
 
-    for i, logo in logos.pairs:
+    drawText(MENU_FONT, madeWithText, madeWithPos, madeWithTextSize, 0, WHITE)
+
+    for i, item in logos.mpairs:
         let x = startX + i * maxWidth
-        drawTexture(logo[], x.int32, getScreenHeight() - maxHeight, tint)
+        if item.texture.id == 0:
+            item.texture = loadTextureFromImage(loadImageFromMemory(".png", item.raw))
+        drawTexture(item.texture, x.int32, getScreenHeight() - maxHeight, tint)

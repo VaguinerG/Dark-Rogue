@@ -96,7 +96,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Dark_Rogue-android
+          name: Dark_Rogue-android-debug
           path: ./*.apk
           compression-level: 9
 

@@ -7,11 +7,3 @@ proc loadSystemFont() =
             MENU_FONT = loadFontFromMemory(extension, fontBytes, 64, 0)
         except:
             discard
-
-proc loadLogoImages() =
-    NIM_LOGO = loadTextureFromImage(loadImageFromMemory(".png", NIM_LOGO_BYTES))
-    RAYLIB_LOGO = loadTextureFromImage(loadImageFromMemory(".png", RAYLIB_LOGO_BYTES))
-
-proc initAssets() =
-    loadSystemFont()
-    loadLogoImages()
