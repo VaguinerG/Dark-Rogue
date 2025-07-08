@@ -14,13 +14,10 @@ proc drawMapSelectionScene() =
     
     let mapRect = Rectangle(x: x, y: y, width: MAP_SIZE.float32, height: MAP_SIZE.float32)
     
-    # Desenha o mapa
     drawTexture(mapTexture, int32(x), int32(y), WHITE)
     
-    # Desenha a borda
     drawRectangleLines(mapRect, BORDER_WIDTH, BLACK)
     
-    # Verifica clique no mapa
     if checkCollisionPointRec(getMousePosition(), mapRect) and isMouseButtonPressed(LEFT):
         SELECTED_MAP = i
         CURRENT_SCENE = GAME
