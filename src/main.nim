@@ -1,14 +1,14 @@
 import admob # required because of android version, even if not used
-import os, sequtils, raylib, raygui, macros
+import sequtils, raylib, raygui, macros, strutils, unicode
 
-import external/[nimsystemfonts, nayanim]
+import external/[nayanim]
 
 include internal/[core/constants, core/types, core/variables, core/functions]
+include internal/[translations/constants, translations/variables, translations/functions]
 include internal/[logos/variables]
-include internal/[fonts/constants, fonts/variables, fonts/functions]
 include internal/[units/types, units/variables]
 
-include scenes/[logo, menu, character_selection]
+include scenes/[logo, menu, character_selection, language_selection]
 
 setTraceLogLevel(None)
 setConfigFlags(flags(WindowResizable, Msaa4xHint, VsyncHint))
@@ -16,12 +16,15 @@ setConfigFlags(flags(WindowResizable, Msaa4xHint, VsyncHint))
 initWindow(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT, "Dark Rogue")
 
 block:
-    loadSystemFont()
+    loadFonts()
+    guiLoadStyleDark()
     while not windowShouldClose():
         updateVars()
         drawing:
             clearBackground(MENU_BG_COLOR)
             case CURRENT_SCENE:
+                of LANGUAGE_SELECTION:
+                    drawLanguageSelectionScene()
                 of LOGO:
                     drawLogoScene()
                 of MENU:

@@ -5,5 +5,5 @@ proc drawMenuScreen() =
         width: 50,
         height: 50
     )
-    if button(playButtonRectangle, "Play"):
+    if button(playButtonRectangle, translations[LANGUAGE].play):
         CURRENT_SCENE = CHAR_SELECTION

@@ -9,8 +9,8 @@ proc drawLogoScene() =
 
     if currentTime >= sceneDuration or isMouseButtonPressed(LEFT):
         for logo in logos.mitems:
-            # unload textures
             logo.texture = Texture2D()
+        guiSetStyle(Default, TextSize, 16)
         CURRENT_SCENE = MENU
         return
 
@@ -27,7 +27,7 @@ proc drawLogoScene() =
         startX = (getScreenWidth() - totalWidth) div 2
 
     let
-        madeWithText = "Made with Nim and Naylib"
+        madeWithText = translations[LANGUAGE].madewith
         madeWithTextSize = 16.0
         madeWithSize = measureText(MENU_FONT, madeWithText, madeWithTextSize, 0)
         madeWithPos = Vector2(
@@ -35,7 +35,7 @@ proc drawLogoScene() =
             y: getScreenHeight().float - maxHeight.float - madeWithSize.y
         )
 
-    drawText(MENU_FONT, madeWithText, madeWithPos, madeWithTextSize, 0, WHITE)
+    drawText(MENU_FONT, madeWithText, madeWithPos, madeWithTextSize, 0, tint)
 
     for i, item in logos.mpairs:
         let x = startX + i * maxWidth

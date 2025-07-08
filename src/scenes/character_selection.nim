@@ -1,12 +1,12 @@
+let 
+    rectangleWidth = 64
+    rectangleHeight = 150
+    rectangleSPacing = 4
+    startX = rectangleWidth
+
 var selectionStates: array[UnitClass, AnimationState]
 
 proc drawCharacterSelection =
-    let 
-        rectangleWidth = 64
-        rectangleHeight = 150
-        rectangleSPacing = 4
-        startX = rectangleWidth
-
     for i, HERO in unitsBase.mpairs:
         if HERO.type == UnitType.HERO:
             if HERO.texture.id == 0:

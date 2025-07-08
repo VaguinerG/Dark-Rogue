@@ -1,3 +1,3 @@
 type 
     Scenes = enum
-        LOGO, MENU, CHAR_SELECTION
+        LANGUAGE_SELECTION, LOGO, MENU, CHAR_SELECTION
