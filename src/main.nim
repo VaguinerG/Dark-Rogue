@@ -4,13 +4,14 @@ import sequtils, raylib, raygui, macros, strutils, unicode
 import external/[nayanim]
 
 include internal/[core/constants, core/types, core/variables, core/functions]
+include internal/[maps/variables, maps/functions]
 include internal/[translations/constants, translations/variables, translations/functions]
 include internal/[logos/variables]
 include internal/[units/types, units/variables]
 
-include scenes/[logo, menu, character_selection, language_selection]
+include scenes/[logo, menu, character_selection, language_selection, map_selection, game]
 
-setTraceLogLevel(None)
+#setTraceLogLevel(None)
 setConfigFlags(flags(WindowResizable, Msaa4xHint, VsyncHint))
 
 initWindow(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT, "Dark Rogue")
@@ -31,5 +32,9 @@ block:
                     drawMenuScreen()
                 of CHAR_SELECTION:
                     drawCharacterSelection()
+                of MAP_SELECTION:
+                    drawMapSelectionScene()
+                of GAME:
+                    drawGame()
 
 closeWindow()

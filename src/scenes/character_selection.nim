@@ -31,4 +31,9 @@ proc drawCharacterSelection =
                 x: rectangleCenter.x - (selectionStates[UnitClass(i)].currentFrame.sourceSize.x / 2),
                 y: rectangleCenter.y - (selectionStates[UnitClass(i)].currentFrame.sourceSize.y / 2)
             )
+            if checkCollisionPointRec(getMousePosition(), rectangle) and isMouseButtonPressed(LEFT):
+                SELECTED_CHAR = UnitClass(i)
+                CURRENT_SCENE = MAP_SELECTION
+                fillMapLevels()
+
             drawAnimation(selectionStates[UnitClass(i)], animationPos)
