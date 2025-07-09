@@ -4,6 +4,7 @@ var
     fadeDuration = sceneDuration / 2.0
 
 proc drawLogoScene() =
+    clearBackground(MENU_BG_COLOR)
     if sceneDuration == sceneBaseDuration: sceneDuration += getTime()
     let currentTime = getTime()
 

@@ -1,6 +1,3 @@
-var
-  SELECTED_CHAR: UnitClass = ARCANE_ARCHER
-
 # The order must respect UnitClass enum order
 var unitsBase = @[
     (

@@ -1,4 +1,5 @@
 proc drawMapSelectionScene() =
+  clearBackground(MENU_BG_COLOR)
   const
     MAP_SIZE = 256
     PADDING = 16

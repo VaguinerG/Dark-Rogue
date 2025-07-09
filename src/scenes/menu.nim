@@ -1,4 +1,5 @@
 proc drawMenuScreen() =
+    clearBackground(MENU_BG_COLOR)
     let playButtonRectangle = Rectangle(
         x: WINDOW_CENTER.x.float,
         y: WINDOW_CENTER.y.float,

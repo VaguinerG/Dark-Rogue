@@ -1,5 +1,5 @@
 import admob # required because of android version, even if not used
-import sequtils, raylib, raygui, macros, strutils, unicode
+import sequtils, raylib, raygui, macros, strutils, unicode, raymath
 
 import external/[nayanim]
 
@@ -8,6 +8,7 @@ include internal/[maps/variables, maps/functions]
 include internal/[translations/constants, translations/variables, translations/functions]
 include internal/[logos/variables]
 include internal/[units/types, units/variables]
+include internal/[game/variables]
 
 include scenes/[logo, menu, character_selection, language_selection, map_selection, game]
 
@@ -22,7 +23,6 @@ block:
     while not windowShouldClose():
         updateVars()
         drawing:
-            clearBackground(MENU_BG_COLOR)
             case CURRENT_SCENE:
                 of LANGUAGE_SELECTION:
                     drawLanguageSelectionScene()

@@ -13,6 +13,7 @@ proc localeCheck() =
                 break
 
 proc drawLanguageSelectionScene() =
+    clearBackground(MENU_BG_COLOR)
     localeCheck()
     if LANGUAGE >= 0:
         return

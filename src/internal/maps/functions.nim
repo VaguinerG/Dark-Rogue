@@ -50,5 +50,5 @@ proc fillMapLevels() =
         for x in 0..<MAP_SIZE:
             imageDrawPixel(img, x.int32, y.int32, pixels[y][x])
     
-    img.imageMipmaps()
+    imageMipmaps(img)
     MAP_LEVELS[0] = loadTextureFromImage(img)

@@ -7,6 +7,7 @@ let
 var selectionStates: array[UnitClass, AnimationState]
 
 proc drawCharacterSelection =
+    clearBackground(MENU_BG_COLOR)
     for i, HERO in unitsBase.mpairs:
         if HERO.type == UnitType.HERO:
             if HERO.texture.id == 0:
