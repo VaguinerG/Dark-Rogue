@@ -11,18 +11,14 @@ proc updatePlayer() =
         movement = normalize(movement)
         let velocity = scale(movement, PLAYER.speed * deltaTime)
         PLAYER.pos = add(PLAYER.pos, velocity)
-        if (PLAYER.animation.name != "RUN"):
-            PLAYER.animation.name = "RUN"
-            PLAYER.animation.frame = 0
+        PLAYER.animation.name = "RUN"
         
         if movement.x < 0.0:
             PLAYER.animation.horizontalFlip = true
         elif movement.x > 0.0:
             PLAYER.animation.horizontalFlip = false
     else:
-        if (PLAYER.animation.name != "IDLE"):
-            PLAYER.animation.name = "IDLE"
-            PLAYER.animation.frame = 0
+        PLAYER.animation.name = "IDLE"
 
 proc updateCamera() =
     let deltaTime = getFrameTime()
