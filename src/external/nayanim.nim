@@ -22,6 +22,7 @@ type
     animationData*: AnimationData
     name*: string
     currentFrame*: ptr Frame
+    frameSize*: Vector2
     
     # === Frame Control ===
     frame*: int = 0
@@ -148,6 +149,7 @@ proc newAnimation*(animationData: AnimationData, animationName: string): Animati
   )
   updateAnimation(result)
   result.frame = 0
+  result.frameSize = result.animationData.frames.getOrDefault(result.name)[0].sourceSize
 
 proc getSourceRect*(state: AnimationState, x, y: float32): Rectangle =
   Rectangle(

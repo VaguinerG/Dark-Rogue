@@ -41,40 +41,42 @@ proc drawUnits() =
     withLock MAP_UNITS_LOCK:
         for unit in MAP_UNITS:
             updateAnimation(unit.animation)
-            let frameSize = unit.animation.currentFrame.sourceSize
+            let frameSize = unit.animation.frameSize
             let centeredPos = subtract(unit.pos, scale(frameSize, 0.5f))
             drawAnimation(unit.animation, centeredPos)
 
+var overloaded = false
 proc spawnMonster() =
-    let currentTime = times.getTime().toUnixFloat()
-    let spawnRate = GAME_RUN_TIME / 1
-    let spawnInterval = 1.0 / spawnRate
-    
-    if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
-        let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
-        let spawnDistance = add(scale(screenBounds, 0.5), Vector2(x: 100.0, y: 100.0))
+    if not overloaded:
+        let currentTime = times.getTime().toUnixFloat()
+        let spawnRate = GAME_RUN_TIME / 1
+        let spawnInterval = 1.0 / spawnRate
         
-        let angle = rand(360).float32 * PI / 180.0
-        let direction = Vector2(x: cos(angle), y: sin(angle))
-        let offset = Vector2(
-            x: direction.x * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y),
-            y: direction.y * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y)
-        )
-        
-        let spawnPos = add(PLAYER_CAMERA.target, offset)
-        let batIndex = BAT.ord
-        let newBat = Unit(
-            class: BAT,
-            pos: spawnPos,
-            speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
-            attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
-            attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
-            animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
-            hp: BASE_HP * unitsBase[batIndex].hp
-        )
-        
-        MAP_UNITS.add(newBat)
-        LAST_UNIT_SPAWN_TIME = currentTime
+        if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
+            let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
+            let spawnDistance = add(scale(screenBounds, 0.5), Vector2(x: 100.0, y: 100.0))
+            
+            let angle = rand(360).float32 * PI / 180.0
+            let direction = Vector2(x: cos(angle), y: sin(angle))
+            let offset = Vector2(
+                x: direction.x * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y),
+                y: direction.y * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y)
+            )
+            
+            let spawnPos = add(PLAYER_CAMERA.target, offset)
+            let batIndex = BAT.ord
+            let newBat = Unit(
+                class: BAT,
+                pos: spawnPos,
+                speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
+                attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
+                attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
+                animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
+                hp: BASE_HP * unitsBase[batIndex].hp
+            )
+            
+            MAP_UNITS.add(newBat)
+            LAST_UNIT_SPAWN_TIME = currentTime
 
 proc getNearbyUnits(unit: Unit, radius: float): seq[Unit] =
     MAP_UNITS.filterIt(it != unit and distance(unit.pos, it.pos) <= radius and not (it.animation.name == "DEATH"))
@@ -151,32 +153,42 @@ proc damageUnit(attacker: Unit, target: Unit) =
         target.animation.paused = false
 
 proc updateUnits() =
+    let startTime = times.getTime().toUnixFloat()
+    
     if tryAcquire(MAP_UNITS_LOCK):
         MAP_UNITS = MAP_UNITS.filterIt(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
         release(MAP_UNITS_LOCK)
-    
-    for unit in MAP_UNITS:
-        if unit.hp < 1 :
-            continue
-            
-        case unit.class:
-            of BAT:
-                if isUnitMovable(unit) and PLAYER.hp > 0:
-                    if distance(unit.pos, PLAYER.pos) > unit.attackrange:
-                        moveUnitToUnit(unit, PLAYER)
-                    else:
-                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
-            of MOONSTONE:
-                if isUnitMovable(unit):
-                    let nearbyUnits = getNearbyUnits(unit, unit.attackrange)
-                    if nearbyUnits.len > 0:
-                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
-                        for target in nearbyUnits:
-                            damageUnit(PLAYER, target)
-                        
-            else:
-                discard
 
+        for unit in MAP_UNITS:
+            if unit.hp < 1 :
+                continue
+                
+            case unit.class:
+                of BAT:
+                    if isUnitMovable(unit) and PLAYER.hp > 0:
+                        if distance(unit.pos, PLAYER.pos) > unit.attackrange:
+                            moveUnitToUnit(unit, PLAYER)
+                        else:
+                            unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+                of MOONSTONE:
+                    if isUnitMovable(unit):
+                        let nearbyUnits = getNearbyUnits(unit, unit.attackrange)
+                        if nearbyUnits.len > 0:
+                            unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+                            for target in nearbyUnits:
+                                damageUnit(PLAYER, target)
+                            
+                else:
+                    discard
+    else:
+        overloaded = true
+        return
+    let endTime = times.getTime().toUnixFloat()
+    let executionTime = endTime - startTime
+    
+    overloaded = executionTime > getFrameTime()
+    
+    
 proc initGame() =
     initLock(MAP_UNITS_LOCK)
     let batIndex = BAT.ord

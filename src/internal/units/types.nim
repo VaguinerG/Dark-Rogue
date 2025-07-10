@@ -13,3 +13,4 @@ type
         hp: float
         attackrange: float
         attackdamage: float
+        updating: bool

@@ -68,6 +68,5 @@ elif defined(macosx):
 elif defined(windows) or defined(linux):
   --cc:gcc
   --outdir:"src/bin/"
-  --define:GraphicsApiOpenGl11
   --passC:"-flto -fdevirtualize-at-ltrans -fno-semantic-interposition -mfpmath=sse -fmerge-all-constants -fstrict-overflow -fno-wrapv -fvect-cost-model=unlimited -ftree-vectorize -floop-nest-optimize -fipa-pta -Ofast -march=native"
   --passL:"-flto"
