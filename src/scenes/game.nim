@@ -106,8 +106,12 @@ proc spawnMonster() =
 
 proc updateUnits() =
     let deltaTime = getFrameTime()
+    let gridSize = 64.0
+    let collisionRadius = 20.0
     
-    for unit in MAP_UNITS.mitems:
+    for i in 0..<MAP_UNITS.len:
+        var unit = addr MAP_UNITS[i]
+        
         if unit.class == BAT:
             if PLAYER.hp > 0:
                 let direction = subtract(PLAYER.pos, unit.pos)
@@ -123,6 +127,44 @@ proc updateUnits() =
                         unit.animation.horizontalFlip = false
             else:
                 unit.animation.name = "IDLE"
+    
+    var grid: seq[seq[seq[int]]]
+    let minX = int(min(MAP_UNITS.mapIt(it.pos.x)) / gridSize) - 1
+    let maxX = int(max(MAP_UNITS.mapIt(it.pos.x)) / gridSize) + 1
+    let minY = int(min(MAP_UNITS.mapIt(it.pos.y)) / gridSize) - 1
+    let maxY = int(max(MAP_UNITS.mapIt(it.pos.y)) / gridSize) + 1
+    
+    let gridWidth = maxX - minX + 1
+    let gridHeight = maxY - minY + 1
+    
+    grid = newSeq[seq[seq[int]]](gridWidth)
+    for x in 0..<gridWidth:
+        grid[x] = newSeq[seq[int]](gridHeight)
+    
+    for i in 0..<MAP_UNITS.len:
+        let unit = MAP_UNITS[i]
+        let gridX = int(unit.pos.x / gridSize) - minX
+        let gridY = int(unit.pos.y / gridSize) - minY
+        if gridX >= 0 and gridX < gridWidth and gridY >= 0 and gridY < gridHeight:
+            grid[gridX][gridY].add(i)
+    
+    for gridX in 0..<gridWidth:
+        for gridY in 0..<gridHeight:
+            let currentCell = grid[gridX][gridY]
+            
+            for i in 0..<currentCell.len:
+                for j in (i+1)..<currentCell.len:
+                    let unit1 = addr MAP_UNITS[currentCell[i]]
+                    let unit2 = addr MAP_UNITS[currentCell[j]]
+                    
+                    let distance = length(subtract(unit1.pos, unit2.pos))
+                    if distance < collisionRadius and distance > 0.0:
+                        let direction = normalize(subtract(unit1.pos, unit2.pos))
+                        let pushForce = (collisionRadius - distance) * 0.5 * deltaTime * 50.0
+                        let push = scale(direction, pushForce)
+                        
+                        unit1.pos = add(unit1.pos, push)
+                        unit2.pos = subtract(unit2.pos, push)
 
 proc initGame() =
     let newUnit = Unit(
