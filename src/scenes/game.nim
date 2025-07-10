@@ -67,14 +67,14 @@ proc drawUnits() =
         drawAnimation(unit.animation, centeredPos)
 
 proc spawnMonster() =
-    let currentTime = getTime()
-    let timeSinceLastSpawn = currentTime - LAST_UNIT_SPAWN_TIME
+    let currentTime = times.getTime().toUnixFloat()
+    let spawnRate = GAME_RUN_TIME / 60
+    let spawnInterval = 1.0 / spawnRate
     
-    let gameTime = currentTime
-    #let spawnInterval = max(0.5, 2.0 - (gameTime * 0.01))
-    let spawnInterval = 0.01
-    
-    if timeSinceLastSpawn >= spawnInterval:
+    drawText("spawnInterval: " & $spawnInterval, 0, 72, 24, BLUE)
+    drawText("spawnRate: " & $spawnRate, 0, 96, 24, BLUE)
+    drawText("GAME_RUN_TIME: " & $GAME_RUN_TIME, 0, 120, 24, BLUE)
+    if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
         let batIndex = BAT.ord
         if unitsBase[batIndex].texture.id == 0:
             unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
@@ -136,11 +136,13 @@ proc initGame() =
     
 proc drawGame() =
     if MAP_UNITS.len == 0: initGame()
+    GAME_RUN_TIME += getFrameTime()
     updatePlayer()
     updateCamera()
-    spawnMonster()
     updateUnits()
 
     mode2D(PLAYER_CAMERA):
         drawMap()
         drawUnits()
+    
+    spawnMonster()

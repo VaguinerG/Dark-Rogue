@@ -5,7 +5,8 @@ var
     PLAYER_CAMERA: Camera2d
 
 var
-    LAST_UNIT_SPAWN_TIME = getTime()
+    GAME_RUN_TIME = 0.0
+    LAST_UNIT_SPAWN_TIME = times.getTime().toUnixFloat()
 
 var
     cameraZoom = 1.0

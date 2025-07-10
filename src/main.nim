@@ -1,5 +1,5 @@
 import admob # required because of android version, even if not used
-import sequtils, raylib, raygui, macros, strutils, unicode, raymath, math
+import sequtils, raylib, raygui, macros, strutils, unicode, raymath, math, times
 
 import external/[nayanim]
 
