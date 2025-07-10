@@ -11,14 +11,18 @@ proc updatePlayer() =
         movement = normalize(movement)
         let velocity = scale(movement, PLAYER.speed * deltaTime)
         PLAYER.pos = add(PLAYER.pos, velocity)
-        PLAYER.animation.name = "RUN"
+        if (PLAYER.animation.name != "RUN"):
+            PLAYER.animation.name = "RUN"
+            PLAYER.animation.frame = 0
         
         if movement.x < 0.0:
             PLAYER.animation.horizontalFlip = true
         elif movement.x > 0.0:
             PLAYER.animation.horizontalFlip = false
     else:
-        PLAYER.animation.name = "IDLE"
+        if (PLAYER.animation.name != "IDLE"):
+            PLAYER.animation.name = "IDLE"
+            PLAYER.animation.frame = 0
 
 proc updateCamera() =
     let deltaTime = getFrameTime()
@@ -71,9 +75,6 @@ proc spawnMonster() =
     let spawnRate = GAME_RUN_TIME / 60
     let spawnInterval = 1.0 / spawnRate
     
-    drawText("spawnInterval: " & $spawnInterval, 0, 72, 24, BLUE)
-    drawText("spawnRate: " & $spawnRate, 0, 96, 24, BLUE)
-    drawText("GAME_RUN_TIME: " & $GAME_RUN_TIME, 0, 120, 24, BLUE)
     if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
         let batIndex = BAT.ord
         if unitsBase[batIndex].texture.id == 0:
@@ -134,15 +135,22 @@ proc initGame() =
     MAP_UNITS.add(newUnit)
     PLAYER = newUnit
     
+proc logicFunction() =
+    {.cast(gcsafe).}:
+        while true:
+            updateUnits()
+            waitTime(getFrameTime())
+
 proc drawGame() =
-    if MAP_UNITS.len == 0: initGame()
+    if MAP_UNITS.len == 0:
+        initGame()
+        createThread(logicThread, logicFunction)
+    
     GAME_RUN_TIME += getFrameTime()
     updatePlayer()
+    spawnMonster()
     updateCamera()
-    updateUnits()
 
     mode2D(PLAYER_CAMERA):
         drawMap()
         drawUnits()
-    
-    spawnMonster()

@@ -1,3 +1,5 @@
+var logicThread: Thread[void]
+
 # The order must respect UnitClass enum order
 var unitsBase = @[
     (
