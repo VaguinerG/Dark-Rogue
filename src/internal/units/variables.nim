@@ -1,5 +1,7 @@
-var logicThread: Thread[void]
-
+var
+    logicThread: Thread[void]
+    MAP_UNITS_LOCK: Lock
+    
 # The order must respect UnitClass enum order
 var unitsBase = @[
     (

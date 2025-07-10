@@ -37,9 +37,6 @@ proc drawMap() =
             let tilePos = Vector2(x: x.float32 * tileSize.x, y: y.float32 * tileSize.y)
             drawTexture(mapTexture[], tilePos.x.int32, tilePos.y.int32, WHITE)
 
-var MAP_UNITS_LOCK: Lock
-
-initLock(MAP_UNITS_LOCK)
 proc drawUnits() =
     withLock MAP_UNITS_LOCK:
         for unit in MAP_UNITS:
@@ -129,7 +126,8 @@ proc updatePlayer() =
 
             PLAYER.animation.name = "RUN"
             
-            PLAYER.animation.horizontalFlip = movement.x < 0.0    
+            if movement.x != 0.0:
+                PLAYER.animation.horizontalFlip = movement.x < 0.0
         else:
             PLAYER.animation.name = "IDLE"
             
@@ -180,6 +178,7 @@ proc updateUnits() =
                 discard
 
 proc initGame() =
+    initLock(MAP_UNITS_LOCK)
     let batIndex = BAT.ord
     if unitsBase[batIndex].texture.id == 0:
         unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
@@ -204,6 +203,22 @@ proc logicFunction() =
             updateUnits()
             waitTime(getFrameTime())
 
+
+proc drawTime() =
+    let totalSeconds = int(GAME_RUN_TIME)
+    let minutes = totalSeconds div 60
+    let seconds = totalSeconds mod 60
+    let timeText = fmt"{minutes:02d}:{seconds:02d}"
+    
+    let textSize = measureText(MENU_FONT, timeText, 20.0, 0.0)
+    let centerX = (getScreenWidth() - int(textSize.x)) div 2
+    
+    let position = Vector2(x: float32(centerX), y: 10.0)
+    drawText(MENU_FONT, timeText, position, 20.0, 0.0, BLUE)
+
+proc drawUI() =
+    drawTime()
+
 proc drawGame() =
     if MAP_UNITS.len == 0:
         initGame()
@@ -216,3 +231,4 @@ proc drawGame() =
     mode2D(PLAYER_CAMERA):
         drawMap()
         drawUnits()
+    drawUI()

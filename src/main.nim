@@ -1,5 +1,5 @@
 import admob # required because of android version, even if not used
-import sequtils, raylib, raygui, macros, strutils, unicode, raymath, math, times, tables, locks
+import sequtils, raylib, raygui, macros, strutils, unicode, raymath, math, times, tables, locks, strformat
 
 import external/[nayanim]
 
@@ -12,7 +12,7 @@ include internal/[game/variables]
 
 include scenes/[logo, menu, character_selection, language_selection, map_selection, game]
 
-#setTraceLogLevel(None)
+setTraceLogLevel(None)
 setConfigFlags(flags(WindowResizable, Msaa4xHint, VsyncHint))
 
 initWindow(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT, "Dark Rogue")
