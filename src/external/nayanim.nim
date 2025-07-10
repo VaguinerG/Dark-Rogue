@@ -114,7 +114,6 @@ proc updateAnimation*(state: var AnimationState) =
   if state.timer > 0 and not (state.frame > frames.high): return
 
   state.frame += state.frameDirection
-  if state.frame >= frames.high: state.frame = 0
   let lastFrame = frames.high
   
   template handleBoundary(condition: bool, loopFrame, stopFrame: int) =
@@ -127,7 +126,7 @@ proc updateAnimation*(state: var AnimationState) =
         state.finished = true
   
   case state.direction:
-    of Forward:   handleBoundary(state.frame > lastFrame, 0, lastFrame)
+    of Forward:  handleBoundary(state.frame > lastFrame, 0, lastFrame)
     of Backward:  handleBoundary(state.frame < 0, lastFrame, 0)
     of PingPong:
       if state.frameDirection > 0 and state.frame > lastFrame:
