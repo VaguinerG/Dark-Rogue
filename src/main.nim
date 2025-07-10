@@ -1,5 +1,5 @@
 import admob # required because of android version, even if not used
-import sequtils, raylib, raygui, macros, strutils, unicode, raymath
+import sequtils, raylib, raygui, macros, strutils, unicode, raymath, math
 
 import external/[nayanim]
 
@@ -36,5 +36,7 @@ block:
                     drawMapSelectionScene()
                 of GAME:
                     drawGame()
+                    drawText("FPS: " & $getFps(), 0, 0, 24, BLUE)
+                    drawText("UNITS COUNT: " & $MAP_UNITS.len, 0, 24, 24, BLUE)
 
 closeWindow()

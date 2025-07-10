@@ -7,6 +7,8 @@ var unitsBase = @[
         texture: Texture2D(),
         animationdata: AnimationData(),
         type: HERO,
+        speed: 1.1,
+        hp: 2.0
     ),
     (
         name: "Arcane Archer",
@@ -15,5 +17,17 @@ var unitsBase = @[
         texture: Texture2D(),
         animationdata: AnimationData(),
         type: HERO,
+        speed: 1.6,
+        hp: 0.5
+    ),
+    (
+        name: "Bat",
+        imgBytes: staticReadBytes("../../assets/images/units/monsters/bat/bat_opt.png"),
+        json: staticReadString("../../assets/images/units/monsters/bat/bat.json"),
+        texture: Texture2D(),
+        animationdata: AnimationData(),
+        type: MONSTER,
+        speed: 0.7,
+        hp: 0.1
     )
 ]

@@ -5,8 +5,8 @@ var
 
 proc drawLogoScene() =
     clearBackground(MENU_BG_COLOR)
-    if sceneDuration == sceneBaseDuration: sceneDuration += getTime()
-    let currentTime = getTime()
+    if sceneDuration == sceneBaseDuration: sceneDuration += raylib.getTime()
+    let currentTime = raylib.getTime()
 
     if currentTime >= sceneDuration or isMouseButtonPressed(LEFT):
         for logo in logos.mitems:

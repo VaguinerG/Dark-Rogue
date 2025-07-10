@@ -66,12 +66,70 @@ proc drawUnits() =
         let centeredPos = subtract(unit.pos, scale(frameSize, 0.5f))
         drawAnimation(unit.animation, centeredPos)
 
+proc spawnMonster() =
+    let currentTime = getTime()
+    let timeSinceLastSpawn = currentTime - LAST_UNIT_SPAWN_TIME
+    
+    let gameTime = currentTime
+    #let spawnInterval = max(0.5, 2.0 - (gameTime * 0.01))
+    let spawnInterval = 0.01
+    
+    if timeSinceLastSpawn >= spawnInterval:
+        let batIndex = BAT.ord
+        if unitsBase[batIndex].texture.id == 0:
+            unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
+            unitsBase[batIndex].animationdata = loadAnimationData(unitsBase[batIndex].json, unitsBase[batIndex].texture)
+        
+        let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
+        let spawnDistance = add(scale(screenBounds, 0.5), Vector2(x: 100.0, y: 100.0))
+        
+        let angle = rand(360).float32 * PI / 180.0
+        let direction = Vector2(x: cos(angle), y: sin(angle))
+        let offset = Vector2(
+            x: direction.x * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y),
+            y: direction.y * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y)
+        )
+        
+        let spawnPos = add(PLAYER_CAMERA.target, offset)
+        
+        let newBat = Unit(
+            class: BAT,
+            pos: spawnPos,
+            speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
+            animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
+            hp: BASE_HP * unitsBase[batIndex].hp
+        )
+        
+        MAP_UNITS.add(newBat)
+        LAST_UNIT_SPAWN_TIME = currentTime
+
+proc updateUnits() =
+    let deltaTime = getFrameTime()
+    
+    for unit in MAP_UNITS.mitems:
+        if unit.class == BAT:
+            if PLAYER.hp > 0:
+                let direction = subtract(PLAYER.pos, unit.pos)
+                if length(direction) > 0.0:
+                    let normalizedDirection = normalize(direction)
+                    let velocity = scale(normalizedDirection, unit.speed * deltaTime)
+                    unit.pos = add(unit.pos, velocity)
+                    unit.animation.name = "RUN"
+                    
+                    if normalizedDirection.x < 0.0:
+                        unit.animation.horizontalFlip = true
+                    elif normalizedDirection.x > 0.0:
+                        unit.animation.horizontalFlip = false
+            else:
+                unit.animation.name = "IDLE"
+
 proc initGame() =
     let newUnit = Unit(
         class: SELECTED_CHAR,
         pos: Vector2(x: 0.0, y: 0.0),
-        speed: 100.0,
-        animation: newAnimation(unitsBase[SELECTED_CHAR.ord].animationdata, "IDLE")
+        speed: BASE_MOVE_SPEED * unitsBase[SELECTED_CHAR.ord].speed,
+        animation: newAnimation(unitsBase[SELECTED_CHAR.ord].animationdata, "IDLE"),
+        hp: BASE_HP * unitsBase[SELECTED_CHAR.ord].hp
     )
     MAP_UNITS.add(newUnit)
     PLAYER = newUnit
@@ -80,7 +138,9 @@ proc drawGame() =
     if MAP_UNITS.len == 0: initGame()
     updatePlayer()
     updateCamera()
-    
+    spawnMonster()
+    updateUnits()
+
     mode2D(PLAYER_CAMERA):
         drawMap()
         drawUnits()
