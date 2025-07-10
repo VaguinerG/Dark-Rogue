@@ -11,3 +11,5 @@ type
         speed: float
         animation: AnimationState
         hp: float
+        attackrange: float
+        attackdamage: float

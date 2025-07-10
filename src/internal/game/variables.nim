@@ -14,3 +14,5 @@ var
 var
     BASE_MOVE_SPEED = 100.0
     BASE_HP = 50.0
+    BASE_ATTACK_RANGE = 20.0
+    BASE_ATTACK_DAMAGE = 2.0

@@ -9,8 +9,11 @@ var unitsBase = @[
         texture: Texture2D(),
         animationdata: AnimationData(),
         type: HERO,
+        class: MOONSTONE,
         speed: 1.1,
-        hp: 2.0
+        hp: 2.0,
+        attackrange: 6.0,
+        attackdamage: 3.0
     ),
     (
         name: "Arcane Archer",
@@ -19,8 +22,11 @@ var unitsBase = @[
         texture: Texture2D(),
         animationdata: AnimationData(),
         type: HERO,
+        class: ARCANE_ARCHER,
         speed: 1.6,
-        hp: 0.5
+        hp: 0.5,
+        attackrange: 1.0,
+        attackdamage: 2.0
     ),
     (
         name: "Bat",
@@ -29,7 +35,10 @@ var unitsBase = @[
         texture: Texture2D(),
         animationdata: AnimationData(),
         type: MONSTER,
+        class: BAT,
         speed: 0.7,
-        hp: 0.1
+        hp: 0.1,
+        attackrange: 1.0,
+        attackdamage: 0.1
     )
 ]

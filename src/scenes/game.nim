@@ -1,25 +1,3 @@
-proc updatePlayer() =
-    let deltaTime = getFrameTime()
-    var movement = Vector2(x: 0.0, y: 0.0)
-    
-    if isKeyDown(W) or isKeyDown(UP): movement.y -= 1.0
-    if isKeyDown(S) or isKeyDown(DOWN): movement.y += 1.0
-    if isKeyDown(A) or isKeyDown(LEFT): movement.x -= 1.0
-    if isKeyDown(D) or isKeyDown(RIGHT): movement.x += 1.0
-    
-    if length(movement) > 0.0:
-        movement = normalize(movement)
-        let velocity = scale(movement, PLAYER.speed * deltaTime)
-        PLAYER.pos = add(PLAYER.pos, velocity)
-        PLAYER.animation.name = "RUN"
-        
-        if movement.x < 0.0:
-            PLAYER.animation.horizontalFlip = true
-        elif movement.x > 0.0:
-            PLAYER.animation.horizontalFlip = false
-    else:
-        PLAYER.animation.name = "IDLE"
-
 proc updateCamera() =
     let deltaTime = getFrameTime()
     let elasticity = 5.0
@@ -68,15 +46,10 @@ proc drawUnits() =
 
 proc spawnMonster() =
     let currentTime = times.getTime().toUnixFloat()
-    let spawnRate = GAME_RUN_TIME / 60
+    let spawnRate = GAME_RUN_TIME / 1
     let spawnInterval = 1.0 / spawnRate
     
     if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
-        let batIndex = BAT.ord
-        if unitsBase[batIndex].texture.id == 0:
-            unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
-            unitsBase[batIndex].animationdata = loadAnimationData(unitsBase[batIndex].json, unitsBase[batIndex].texture)
-        
         let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
         let spawnDistance = add(scale(screenBounds, 0.5), Vector2(x: 100.0, y: 100.0))
         
@@ -88,11 +61,13 @@ proc spawnMonster() =
         )
         
         let spawnPos = add(PLAYER_CAMERA.target, offset)
-        
+        let batIndex = BAT.ord
         let newBat = Unit(
             class: BAT,
             pos: spawnPos,
             speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
+            attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
+            attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
             animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
             hp: BASE_HP * unitsBase[batIndex].hp
         )
@@ -100,94 +75,116 @@ proc spawnMonster() =
         MAP_UNITS.add(newBat)
         LAST_UNIT_SPAWN_TIME = currentTime
 
-proc updateUnits() =
+proc getNearbyUnits(unit: Unit, radius: float): seq[Unit] =
+    MAP_UNITS.filterIt(it != unit and distance(unit.pos, it.pos) <= radius and not (it.animation.name == "DEATH"))
+
+proc moveUnitToUnit(unit: Unit, target: Unit) =
+   let
+       collisionRadius = unit.attackrange
+       pushForce = 10.0
+       direction = subtract(target.pos, unit.pos)
+       normalizedDirection = normalize(direction)
+       velocity = scale(normalizedDirection, unit.speed * getFrameTime())
+       nearbyUnits = getNearbyUnits(unit, collisionRadius)
+   
+   for nearby in nearbyUnits:
+       let pushDirection = normalize(subtract(nearby.pos, unit.pos))
+       nearby.pos = add(nearby.pos, scale(pushDirection, pushForce * getFrameTime()))
+   
+   unit.pos = add(unit.pos, velocity)
+   unit.animation.horizontalFlip = unit.pos.x > PLAYER.pos.x
+   unit.animation.name = "RUN"
+
+proc isUnitMovable(unit: Unit): bool =
+    if unit.animation.playOnce:
+        if unit.animation.finished:
+            unit.animation.name = "IDLE"
+            unit.animation.playOnce = false
+            unit.animation.finished = false
+            unit.animation.paused = false
+            return true
+        else:
+            return false
+    if unit.animation.paused: return false
+    return true
+
+proc updatePlayer() =
     let deltaTime = getFrameTime()
-    let gridSize = 64.0
-    let collisionRadius = 20.0
-    let attackRange = 50.0
+    var movement = Vector2(x: 0.0, y: 0.0)
     
-    for i in 0..<MAP_UNITS.len:
-        let unit = MAP_UNITS[i]
-        
-        if unit.class == BAT:
-            if unit.animation.name == "ATTACK1" and unit.animation.finished:
-                unit.animation.name = "IDLE"
-                unit.animation.playOnce = false
-                unit.animation.finished = false
-                unit.animation.paused = false
-                continue
+    if isKeyDown(W) or isKeyDown(UP): movement.y -= 1.0
+    if isKeyDown(S) or isKeyDown(DOWN): movement.y += 1.0
+    if isKeyDown(A) or isKeyDown(LEFT): movement.x -= 1.0
+    if isKeyDown(D) or isKeyDown(RIGHT): movement.x += 1.0
+    
+    if isUnitMovable(PLAYER):
+        if length(movement) > 0.0:
+            movement = normalize(movement)
+            let velocity = scale(movement, PLAYER.speed * deltaTime)
+            PLAYER.pos = add(PLAYER.pos, velocity)
+
+            PLAYER.animation.name = "RUN"
             
-            let direction = subtract(PLAYER.pos, unit.pos)
-            let distanceToPlayer = length(direction)
+            PLAYER.animation.horizontalFlip = movement.x < 0.0    
+        else:
+            PLAYER.animation.name = "IDLE"
             
-            if distanceToPlayer <= attackRange:
-                if unit.animation.name != "ATTACK1":
-                    unit.animation.name = "ATTACK1"
-                    unit.animation.frame = 0
-                    unit.animation.playOnce = true
-                    
-                    if direction.x < 0.0:
-                        unit.animation.horizontalFlip = true
-                    elif direction.x > 0.0:
-                        unit.animation.horizontalFlip = false
+proc unitAnimateOnce(unit: Unit, animations: varargs[string]) =
+    let frames = unit.animation.animationData.frames
+    let availableAnimations = animations.filterIt(it in frames)
+
+    unit.animation.name = availableAnimations.sample()
+    unit.animation.frame = 0
+    unit.animation.playOnce = true
+    unit.animation.finished = false
+    unit.animation.paused = false
+
+proc damageUnit(attacker: Unit, target: Unit) =
+    target.hp -= attacker.attackdamage
+    if target.hp < 1:
+        target.animation.name = "DEATH"
+        target.animation.frame = 0
+        target.animation.playOnce = true
+        target.animation.finished = false
+        target.animation.paused = false
+
+proc updateUnits() =
+    MAP_UNITS = MAP_UNITS.filterIt(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
+    
+    for unit in MAP_UNITS:
+        if unit.hp < 1:
+            continue
             
-            elif unit.animation.name != "ATTACK1" and distanceToPlayer > 0.0:
-                let normalizedDirection = normalize(direction)
-                let velocity = scale(normalizedDirection, unit.speed * deltaTime)
-                unit.pos = add(unit.pos, velocity)
-                unit.animation.name = "RUN"
-                
-                if normalizedDirection.x < 0.0:
-                    unit.animation.horizontalFlip = true
-                elif normalizedDirection.x > 0.0:
-                    unit.animation.horizontalFlip = false
-            
-            elif unit.animation.name != "ATTACK1":
-                unit.animation.name = "IDLE"
-    
-    var grid: seq[seq[seq[int]]]
-    let minX = int(min(MAP_UNITS.mapIt(it.pos.x)) / gridSize) - 1
-    let maxX = int(max(MAP_UNITS.mapIt(it.pos.x)) / gridSize) + 1
-    let minY = int(min(MAP_UNITS.mapIt(it.pos.y)) / gridSize) - 1
-    let maxY = int(max(MAP_UNITS.mapIt(it.pos.y)) / gridSize) + 1
-    
-    let gridWidth = maxX - minX + 1
-    let gridHeight = maxY - minY + 1
-    
-    grid = newSeq[seq[seq[int]]](gridWidth)
-    for x in 0..<gridWidth:
-        grid[x] = newSeq[seq[int]](gridHeight)
-    
-    for i in 0..<MAP_UNITS.len:
-        let unit = MAP_UNITS[i]
-        let gridX = int(unit.pos.x / gridSize) - minX
-        let gridY = int(unit.pos.y / gridSize) - minY
-        if gridX >= 0 and gridX < gridWidth and gridY >= 0 and gridY < gridHeight:
-            grid[gridX][gridY].add(i)
-    
-    for gridX in 0..<gridWidth:
-        for gridY in 0..<gridHeight:
-            let currentCell = grid[gridX][gridY]
-            
-            for i in 0..<currentCell.len:
-                for j in (i+1)..<currentCell.len:
-                    let unit1 = addr MAP_UNITS[currentCell[i]]
-                    let unit2 = addr MAP_UNITS[currentCell[j]]
-                    
-                    let distance = length(subtract(unit1.pos, unit2.pos))
-                    if distance < collisionRadius and distance > 0.0:
-                        let direction = normalize(subtract(unit1.pos, unit2.pos))
-                        let pushForce = (collisionRadius - distance) * 0.5 * deltaTime * 50.0
-                        let push = scale(direction, pushForce)
+        case unit.class:
+            of BAT:
+                if isUnitMovable(unit) and PLAYER.hp > 0:
+                    if distance(unit.pos, PLAYER.pos) > unit.attackrange:
+                        moveUnitToUnit(unit, PLAYER)
+                    else:
+                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+            of MOONSTONE:
+                if isUnitMovable(unit):
+                    let nearbyUnits = getNearbyUnits(unit, unit.attackrange)
+                    if nearbyUnits.len > 0:
+                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+                        for target in nearbyUnits:
+                            damageUnit(PLAYER, target)
                         
-                        unit1.pos = add(unit1.pos, push)
-                        unit2.pos = subtract(unit2.pos, push)
+            else:
+                discard
 
 proc initGame() =
+    let batIndex = BAT.ord
+    if unitsBase[batIndex].texture.id == 0:
+        unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
+        unitsBase[batIndex].animationdata = loadAnimationData(unitsBase[batIndex].json, unitsBase[batIndex].texture)
+    
     let newUnit = Unit(
         class: SELECTED_CHAR,
         pos: Vector2(x: 0.0, y: 0.0),
         speed: BASE_MOVE_SPEED * unitsBase[SELECTED_CHAR.ord].speed,
+        attackdamage: BASE_ATTACK_DAMAGE * unitsBase[SELECTED_CHAR.ord].attackdamage,
+        attackrange: BASE_ATTACK_RANGE * unitsBase[SELECTED_CHAR.ord].attackrange,
         animation: newAnimation(unitsBase[SELECTED_CHAR.ord].animationdata, "IDLE"),
         hp: BASE_HP * unitsBase[SELECTED_CHAR.ord].hp
     )
@@ -197,6 +194,7 @@ proc initGame() =
 proc logicFunction() =
     {.cast(gcsafe).}:
         while true:
+            spawnMonster()
             updateUnits()
             waitTime(getFrameTime())
 
@@ -207,7 +205,6 @@ proc drawGame() =
     
     GAME_RUN_TIME += getFrameTime()
     updatePlayer()
-    spawnMonster()
     updateCamera()
 
     mode2D(PLAYER_CAMERA):
