@@ -37,12 +37,16 @@ proc drawMap() =
             let tilePos = Vector2(x: x.float32 * tileSize.x, y: y.float32 * tileSize.y)
             drawTexture(mapTexture[], tilePos.x.int32, tilePos.y.int32, WHITE)
 
+var MAP_UNITS_LOCK: Lock
+
+initLock(MAP_UNITS_LOCK)
 proc drawUnits() =
-    for unit in MAP_UNITS:
-        updateAnimation(unit.animation)
-        let frameSize = unit.animation.currentFrame.sourceSize
-        let centeredPos = subtract(unit.pos, scale(frameSize, 0.5f))
-        drawAnimation(unit.animation, centeredPos)
+    withLock MAP_UNITS_LOCK:
+        for unit in MAP_UNITS:
+            updateAnimation(unit.animation)
+            let frameSize = unit.animation.currentFrame.sourceSize
+            let centeredPos = subtract(unit.pos, scale(frameSize, 0.5f))
+            drawAnimation(unit.animation, centeredPos)
 
 proc spawnMonster() =
     let currentTime = times.getTime().toUnixFloat()
@@ -149,10 +153,12 @@ proc damageUnit(attacker: Unit, target: Unit) =
         target.animation.paused = false
 
 proc updateUnits() =
-    MAP_UNITS = MAP_UNITS.filterIt(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
+    if tryAcquire(MAP_UNITS_LOCK):
+        MAP_UNITS = MAP_UNITS.filterIt(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
+        release(MAP_UNITS_LOCK)
     
     for unit in MAP_UNITS:
-        if unit.hp < 1:
+        if unit.hp < 1 :
             continue
             
         case unit.class:
