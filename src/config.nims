@@ -1,6 +1,5 @@
 import os
 
---define:GraphicsApiOpenGlEs2
 --define:noSignalHandler
 --define:danger
 --define:strip
@@ -20,6 +19,7 @@ elif buildOS == "macosx":
 const AndroidSysroot = AndroidToolchain / "sysroot"
 
 when defined(android):
+  --define:GraphicsApiOpenGlEs2
   --os:android
   --cc:clang
   when hostCPU == "arm":
@@ -47,6 +47,7 @@ when defined(android):
   --define:androidNDK
 
 elif defined(emscripten):
+  --define:GraphicsApiOpenGlEs2
   --os:linux
   --cpu:wasm32
   --cc:clang
@@ -58,15 +59,3 @@ elif defined(emscripten):
   --define:NaylibWebAsyncify
   --passL:"-o web/index.html"
   --passL:"--shell-file web/minshell.html"
-
-elif defined(macosx):
-  --cc:clang
-  --outdir:"src/bin/"
-  --passC:"-flto -Ofast -march=native"
-  --passL:"-flto"
-
-elif defined(windows) or defined(linux):
-  --cc:gcc
-  --outdir:"src/bin/"
-  --passC:"-flto -fdevirtualize-at-ltrans -fno-semantic-interposition -mfpmath=sse -fmerge-all-constants -fstrict-overflow -fno-wrapv -fvect-cost-model=unlimited -ftree-vectorize -floop-nest-optimize -fipa-pta -Ofast -march=native"
-  --passL:"-flto"

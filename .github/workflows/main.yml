@@ -7,61 +7,85 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build-desktop:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+  build-linux:
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
     steps:
       - uses: actions/checkout@v4
+
       - uses: jiro4989/setup-nim-action@v2
         with:
           nim-version: 'stable'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies (Linux only)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev freeglut3-dev
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: master
+    
+      - name: Install Nim deps
+        run: nimble install naylib nimja https://github.com/planetis-m/naygui zigcc -y
 
-      - name: Install UPX (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install -y upx
-
-      - name: Install UPX (Windows)
-        if: runner.os == 'Windows'
-        run: choco install upx
-
-      - name: Compile desktop binary
+      - name: Install dependencies
         run: |
-          nimble install naylib nimja https://github.com/planetis-m/naygui -y
-          nim c src/main.nim
-
-      - name: Compress with UPX
+          sudo apt-get update
+          sudo apt-get install -y \
+            xorg-dev libgl1-mesa-dev freeglut3-dev zip upx \
+            libwayland-dev libasound2-dev libx11-dev libxrandr-dev \
+            libxi-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev \
+            libxkbcommon-dev gcc musl musl-tools clang gcc-multilib libwayland-dev
+          
+      - name: Compile linux x64 x11
         run: |
-          if [ "${{ runner.os }}" = "macOS" ]; then
-            echo "Skipped"
-          else
-            upx --version
-            upx --best --ultra-brute src/bin/*
-          fi
-        shell: bash
+          nim c -f --cc:clang --passC:"-march=native -Ofast -flto" --passL:"-flto" --clang.exe="zigcc" --clang.linkerexe="zigcc" -o:src/bin/dark_rogue src/main.nim
+          upx --best --ultra-brute ./src/bin/*
           
 
-      - name: Upload desktop binary
+      - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Dark_Rogue-${{ runner.os }}
-          path: src/bin/*
+          name: dark_rogue-x86_64-linux-gnu-x11
+          path: src/bin/dark_rogue
           compression-level: 9
+
+      - name: Compile linux x64 wayland
+        run: |
+          nim c -f -d:wayland --cc:clang --passC:"-march=native -Ofast -flto" --passL:"-flto" --clang.exe="zigcc" --clang.linkerexe="zigcc" -o:src/bin/dark_rogue src/main.nim
+          upx --best --ultra-brute ./src/bin/*
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dark_rogue-x86_64-linux-gnu-wayland
+          path: src/bin/dark_rogue
+          compression-level: 9
+
+  build-macos:
+    runs-on: macos-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: 'stable'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Nim deps
+        run: nimble install naylib nimja https://github.com/planetis-m/naygui -y
+
+      - name: Build macOS binary
+        run: nim c -d:GraphicsApiOpenGlEs2 --passC:"-Ofast -flto -march=native" --passL:"-flto"  -o:src/bin/dark_rogue src/main.nim
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dark_rogue-unknown-mac-gnu-cocoa
+          path: src/bin/*
 
   build-apk:
     runs-on: ubuntu-latest
@@ -99,48 +123,36 @@ jobs:
           name: Dark_Rogue-android-debug
           path: ./*.apk
           compression-level: 9
-
-  build-web:
-    runs-on: ubuntu-latest
+          
+  build-windows:
+    runs-on: windows-latest
     defaults:
       run:
         shell: bash
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    name: Windows x86_64
     steps:
       - uses: actions/checkout@v4
+
       - uses: jiro4989/setup-nim-action@v2
         with:
           nim-version: 'stable'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev freeglut3-dev
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: master
+          
+      - name: Install Nim deps
+        run: nimble install naylib nimja https://github.com/planetis-m/naygui zigcc -y
 
-      - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@v14
-
-      - name: Compile to Web (WASM)
+      - name: Build Windows binary
         run: |
-          nimble install naylib nimja https://github.com/planetis-m/naygui -y
-          nim c -f -d:emscripten src/main.nim
+          nim c -d:GraphicsApiOpenGl11 --passC:"-Ofast -flto -march=native" --passL:"-flto" --clang.exe="zigcc" --clang.linkerexe="zigcc" -o:src/bin/dark-rogue src/main.nim
+          choco install upx
+          upx --best --ultra-brute src/bin/*
 
-      - name: Upload Web Artifact
+      - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Dark_Rogue-web
-          path: web
-          compression-level: 9
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload to Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'web'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: dark_rogue-x86_64-windows-gnu-gdi32
+          path: src/bin/*
