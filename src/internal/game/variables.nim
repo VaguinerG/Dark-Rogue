@@ -12,6 +12,7 @@ var
 
 var
     cameraZoom = 1.0
+    targetZoom = 1.0
 
 var
     BASE_MOVE_SPEED = 100.0

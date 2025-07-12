@@ -1,5 +1,3 @@
-import random
-
 proc fillMapLevels() =
     const
         greenShades = [

@@ -4,25 +4,26 @@ proc getCenterOffset(): Vector2 =
 proc updateCamera() =
     let deltaTime = getFrameTime()
     let elasticity = 5.0
-    
+
     PLAYER_CAMERA.target = lerp(PLAYER_CAMERA.target, PLAYER.pos, elasticity * deltaTime)
-    
-    cameraZoom = clamp(cameraZoom + getMouseWheelMove() * 0.1f, 0.5f, 3.0f)
-    
+
+    targetZoom = clamp(targetZoom + getMouseWheelMove() * 0.1f, 0.5f, 3.0f)
+
+    cameraZoom = lerp(cameraZoom, targetZoom, elasticity * deltaTime)
+
     PLAYER_CAMERA.offset = getCenterOffset()
     PLAYER_CAMERA.rotation = 0.0
     PLAYER_CAMERA.zoom = cameraZoom
 
 proc drawMap() =
-    let tileSize = 256.0
-    let range = 4
+    let range = 16
     
-    let centerX = (PLAYER_CAMERA.target.x / tileSize).int
-    let centerY = (PLAYER_CAMERA.target.y / tileSize).int
+    let centerX = (PLAYER_CAMERA.target.x / MAP_SIZE).int
+    let centerY = (PLAYER_CAMERA.target.y / MAP_SIZE).int
     
     for x in (centerX - range)..(centerX + range):
         for y in (centerY - range)..(centerY + range):
-            let pos = Vector2(x: x.float32 * tileSize, y: y.float32 * tileSize)
+            let pos = Vector2(x: x.float32 * MAP_SIZE, y: y.float32 * MAP_SIZE)
             drawTexture(MAP_LEVELS[SELECTED_MAP], pos, WHITE)
 
 proc drawUnits() =
@@ -160,7 +161,14 @@ proc updateUnits() =
     for unit in MAP_UNITS:
         if unit.hp < 1 :
             continue
-        if unit.animation.color == RED : unit.animation.color = Color(r: 255, g: 255, b: 255, a: 255)
+        if unit.animation.color == RED: 
+            unit.animation.color = Color(r: 255, g: 255, b: 255, a: 255)
+        if unit.animation.name == "HIT" and unit.animation.finished:
+            unit.animation.name = "IDLE"
+            unit.animation.frame = 0
+            unit.animation.playOnce = false
+            unit.animation.finished = false
+            unit.animation.paused = false
         case unit.class:
             of BAT:
                 if isUnitMovable(unit) and PLAYER.hp > 0:
