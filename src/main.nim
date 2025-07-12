@@ -7,7 +7,7 @@ include internal/[core/constants, core/types, core/variables, core/functions]
 include internal/[maps/variables, maps/functions]
 include internal/[translations/constants, translations/variables, translations/functions]
 include internal/[logos/variables]
-include internal/[units/types, units/variables]
+include internal/[units/types, units/variables, units/functions]
 include internal/[game/variables]
 
 include scenes/[logo, menu, character_selection, language_selection, map_selection, game]
@@ -19,6 +19,7 @@ initWindow(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT, "Dark Rogue")
 
 block:
     loadFonts()
+    initUnitsAsset()
     guiLoadStyleDark()
     while not windowShouldClose():
         updateVars()

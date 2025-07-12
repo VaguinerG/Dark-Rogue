@@ -10,9 +10,6 @@ proc drawCharacterSelection =
     clearBackground(MENU_BG_COLOR)
     for i, HERO in unitsBase.mpairs:
         if HERO.type == UnitType.HERO:
-            if HERO.texture.id == 0:
-                HERO.texture = loadTextureFromImage(loadImageFromMemory(".png", HERO.imgBytes))
-                HERO.animationdata = loadAnimationData(HERO.json, HERO.texture)
             if selectionStates[UnitClass(i)].name == "":
                 selectionStates[UnitClass(i)] = newAnimation(HERO.animationdata, "IDLE")
             updateAnimation(selectionStates[UnitClass(i)])

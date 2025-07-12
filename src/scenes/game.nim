@@ -1,41 +1,29 @@
+proc getCenterOffset(): Vector2 =
+    Vector2(x: getScreenWidth().float32 / 2.0, y: getScreenHeight().float32 / 2.0)
+
 proc updateCamera() =
     let deltaTime = getFrameTime()
     let elasticity = 5.0
     
-    let targetPos = PLAYER.pos
+    PLAYER_CAMERA.target = lerp(PLAYER_CAMERA.target, PLAYER.pos, elasticity * deltaTime)
     
-    PLAYER_CAMERA.target.x += (targetPos.x - PLAYER_CAMERA.target.x) * elasticity * deltaTime
-    PLAYER_CAMERA.target.y += (targetPos.y - PLAYER_CAMERA.target.y) * elasticity * deltaTime
+    cameraZoom = clamp(cameraZoom + getMouseWheelMove() * 0.1f, 0.5f, 3.0f)
     
-    cameraZoom += getMouseWheelMove() * 0.1f
-    cameraZoom = clamp(cameraZoom, 0.5f, 3.0f)
-    
-    PLAYER_CAMERA.offset = Vector2(x: getScreenWidth().float32 / 2.0, y: getScreenHeight().float32 / 2.0)
+    PLAYER_CAMERA.offset = getCenterOffset()
     PLAYER_CAMERA.rotation = 0.0
     PLAYER_CAMERA.zoom = cameraZoom
 
 proc drawMap() =
-    let mapTexture = addr MAP_LEVELS[SELECTED_MAP]
-    let tileSize = Vector2(x: mapTexture.width.float32, y: mapTexture.height.float32)
+    let tileSize = 256.0
+    let range = 4
     
-    let viewBounds = Rectangle(
-        x: PLAYER_CAMERA.target.x - PLAYER_CAMERA.offset.x / cameraZoom,
-        y: PLAYER_CAMERA.target.y - PLAYER_CAMERA.offset.y / cameraZoom,
-        width: getScreenWidth().float32 / cameraZoom,
-        height: getScreenHeight().float32 / cameraZoom
-    )
+    let centerX = (PLAYER_CAMERA.target.x / tileSize).int
+    let centerY = (PLAYER_CAMERA.target.y / tileSize).int
     
-    let tileRange = (
-        startX: int(viewBounds.x / tileSize.x) - 1,
-        startY: int(viewBounds.y / tileSize.y) - 1,
-        endX: int((viewBounds.x + viewBounds.width) / tileSize.x) + 1,
-        endY: int((viewBounds.y + viewBounds.height) / tileSize.y) + 1
-    )
-    
-    for x in tileRange.startX..tileRange.endX:
-        for y in tileRange.startY..tileRange.endY:
-            let tilePos = Vector2(x: x.float32 * tileSize.x, y: y.float32 * tileSize.y)
-            drawTexture(mapTexture[], tilePos.x.int32, tilePos.y.int32, WHITE)
+    for x in (centerX - range)..(centerX + range):
+        for y in (centerY - range)..(centerY + range):
+            let pos = Vector2(x: x.float32 * tileSize, y: y.float32 * tileSize)
+            drawTexture(MAP_LEVELS[SELECTED_MAP], pos, WHITE)
 
 proc drawUnits() =
     withLock MAP_UNITS_LOCK:
@@ -45,11 +33,10 @@ proc drawUnits() =
             let centeredPos = subtract(unit.pos, scale(frameSize, 0.5f))
             drawAnimation(unit.animation, centeredPos)
 
-var overloaded = false
 proc spawnMonster() =
-    if not overloaded:
+    if not MAP_UNITS_SPAWN_OVERLOADED:
         let currentTime = times.getTime().toUnixFloat()
-        let spawnRate = GAME_RUN_TIME / 1
+        let spawnRate = GAME_RUN_TIME / 60
         let spawnInterval = 1.0 / spawnRate
         
         if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
@@ -65,13 +52,14 @@ proc spawnMonster() =
             
             let spawnPos = add(PLAYER_CAMERA.target, offset)
             let batIndex = BAT.ord
+            var batAnimation = newAnimation(unitsBase[batIndex].animationdata, "IDLE")
             let newBat = Unit(
                 class: BAT,
                 pos: spawnPos,
                 speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
                 attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
                 attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
-                animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
+                animation: batAnimation,
                 hp: BASE_HP * unitsBase[batIndex].hp
             )
             
@@ -155,47 +143,41 @@ proc damageUnit(attacker: Unit, target: Unit) =
 proc updateUnits() =
     let startTime = times.getTime().toUnixFloat()
     
-    if tryAcquire(MAP_UNITS_LOCK):
-        MAP_UNITS = MAP_UNITS.filterIt(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
-        release(MAP_UNITS_LOCK)
+    if (times.getTime().toUnixFloat() - LAST_UNIT_CLEANUP_TIME) > 5.0:
+        if tryAcquire(MAP_UNITS_LOCK):
+            MAP_UNITS.keepItIf(not (it.hp < 1 and it.animation.name == "DEATH" and it.animation.finished))
+            release(MAP_UNITS_LOCK)
+            LAST_UNIT_CLEANUP_TIME = times.getTime().toUnixFloat()
 
-        for unit in MAP_UNITS:
-            if unit.hp < 1 :
-                continue
-                
-            case unit.class:
-                of BAT:
-                    if isUnitMovable(unit) and PLAYER.hp > 0:
-                        if distance(unit.pos, PLAYER.pos) > unit.attackrange:
-                            moveUnitToUnit(unit, PLAYER)
-                        else:
-                            unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
-                of MOONSTONE:
-                    if isUnitMovable(unit):
-                        let nearbyUnits = getNearbyUnits(unit, unit.attackrange)
-                        if nearbyUnits.len > 0:
-                            unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
-                            for target in nearbyUnits:
-                                damageUnit(PLAYER, target)
-                            
-                else:
-                    discard
-    else:
-        overloaded = true
-        return
+    for unit in MAP_UNITS:
+        if unit.hp < 1 :
+            continue
+            
+        case unit.class:
+            of BAT:
+                if isUnitMovable(unit) and PLAYER.hp > 0:
+                    if distance(unit.pos, PLAYER.pos) > unit.attackrange:
+                        moveUnitToUnit(unit, PLAYER)
+                    else:
+                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+            of MOONSTONE:
+                if isUnitMovable(unit):
+                    let nearbyUnits = getNearbyUnits(unit, unit.attackrange)
+                    if nearbyUnits.len > 0:
+                        unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+                        for target in nearbyUnits:
+                            damageUnit(PLAYER, target)
+                        
+            else:
+                discard
     let endTime = times.getTime().toUnixFloat()
     let executionTime = endTime - startTime
     
-    overloaded = executionTime > getFrameTime()
-    
+    MAP_UNITS_SPAWN_OVERLOADED = executionTime > getFrameTime()
     
 proc initGame() =
     initLock(MAP_UNITS_LOCK)
-    let batIndex = BAT.ord
-    if unitsBase[batIndex].texture.id == 0:
-        unitsBase[batIndex].texture = loadTextureFromImage(loadImageFromMemory(".png", unitsBase[batIndex].imgBytes))
-        unitsBase[batIndex].animationdata = loadAnimationData(unitsBase[batIndex].json, unitsBase[batIndex].texture)
-    
+
     let newUnit = Unit(
         class: SELECTED_CHAR,
         pos: Vector2(x: 0.0, y: 0.0),

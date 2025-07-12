@@ -7,6 +7,8 @@ var
 var
     GAME_RUN_TIME = 0.0
     LAST_UNIT_SPAWN_TIME = times.getTime().toUnixFloat()
+    LAST_UNIT_CLEANUP_TIME = times.getTime().toUnixFloat()
+    MAP_UNITS_SPAWN_OVERLOADED = false
 
 var
     cameraZoom = 1.0
