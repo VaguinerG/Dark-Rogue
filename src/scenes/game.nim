@@ -133,6 +133,14 @@ proc unitAnimateOnce(unit: Unit, animations: varargs[string]) =
 
 proc damageUnit(attacker: Unit, target: Unit) =
     target.hp -= attacker.attackdamage
+    if target.animation.animationData.frames.getOrDefault("HIT").len > 0:
+        target.animation.name = "HIT"
+        target.animation.frame = 0
+        target.animation.playOnce = true
+        target.animation.finished = false
+        target.animation.paused = false
+    else:
+        target.animation.color = RED
     if target.hp < 1:
         target.animation.name = "DEATH"
         target.animation.frame = 0
@@ -152,7 +160,7 @@ proc updateUnits() =
     for unit in MAP_UNITS:
         if unit.hp < 1 :
             continue
-            
+        if unit.animation.color == RED : unit.animation.color = Color(r: 255, g: 255, b: 255, a: 255)
         case unit.class:
             of BAT:
                 if isUnitMovable(unit) and PLAYER.hp > 0:
@@ -160,6 +168,7 @@ proc updateUnits() =
                         moveUnitToUnit(unit, PLAYER)
                     else:
                         unitAnimateOnce(unit, "ATTACK1", "ATTACK2")
+                        damageUnit(unit, PLAYER)
             of MOONSTONE:
                 if isUnitMovable(unit):
                     let nearbyUnits = getNearbyUnits(unit, unit.attackrange)

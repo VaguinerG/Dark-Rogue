@@ -14,7 +14,7 @@ var unitsBase = @[
         class: MOONSTONE,
         speed: 1.1,
         hp: 2.0,
-        attackrange: 6.0,
+        attackrange: 4.0,
         attackdamage: 3.0
     ),
     (
