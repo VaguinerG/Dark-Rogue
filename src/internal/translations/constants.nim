@@ -25,7 +25,7 @@ let translations = @[
   ),
   (
     language: "Русский",
-    madewith: "Сделано с Nim и Naylib",
+    madewith: "Сделано на Nim и Naylib",
     play: "Играть",
     locale: "ru"
   ),
