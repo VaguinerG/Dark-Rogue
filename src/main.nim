@@ -8,7 +8,7 @@ include internal/[maps/variables, maps/functions]
 include internal/[translations/constants, translations/variables, translations/functions]
 include internal/[logos/variables]
 include internal/[units/types, units/variables, units/functions]
-include internal/[game/variables]
+include internal/[game/variables, game/functions]
 
 include scenes/[logo, menu, character_selection, language_selection, map_selection, game]
 

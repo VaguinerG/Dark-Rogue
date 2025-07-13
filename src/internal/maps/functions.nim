@@ -7,8 +7,8 @@ proc fillMapLevels() =
         ]
     
     var 
-        img = genImageColor(MAP_SIZE, MAP_SIZE, greenShades[1])
-        pixels = newSeqWith(MAP_SIZE, newSeq[Color](MAP_SIZE))
+        img = genImageColor(map_size, map_size, greenShades[1])
+        pixels = newSeqWith(map_size, newSeq[Color](map_size))
     
     for row in pixels.mitems:
         for pixel in row.mitems:
@@ -20,19 +20,19 @@ proc fillMapLevels() =
         ((coord mod size) + size) mod size
     
     template `[]`(arr: seq[seq[Color]], x, y: int): Color =
-        arr[wrap(y, MAP_SIZE)][wrap(x, MAP_SIZE)]
+        arr[wrap(y, map_size)][wrap(x, map_size)]
     
     template `[]=`(arr: var seq[seq[Color]], x, y: int, color: Color) =
-        arr[wrap(y, MAP_SIZE)][wrap(x, MAP_SIZE)] = color
+        arr[wrap(y, map_size)][wrap(x, map_size)] = color
     
     proc sample[T](arr: seq[T]): T = arr[rand(arr.len - 1)]
     
-    for _ in 0..<(MAP_SIZE shr 3):
-        pixels[rand(MAP_SIZE), rand(MAP_SIZE)] = sample(greenShades)
+    for _ in 0..<(map_size shr 3):
+        pixels[rand(map_size), rand(map_size)] = sample(greenShades)
     
     for pass in 1..3:
-        for y in 0..<MAP_SIZE:
-            for x in 0..<MAP_SIZE:
+        for y in 0..<map_size:
+            for x in 0..<map_size:
                 var neighbors: seq[Color] = @[]
                 for dy in -1..1:
                     for dx in -1..1:
@@ -44,8 +44,8 @@ proc fillMapLevels() =
                 else:
                     sample(greenShades)
     
-    for y in 0..<MAP_SIZE:
-        for x in 0..<MAP_SIZE:
+    for y in 0..<map_size:
+        for x in 0..<map_size:
             imageDrawPixel(img, x.int32, y.int32, pixels[y][x])
     
     imageMipmaps(img)

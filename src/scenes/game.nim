@@ -1,34 +1,3 @@
-proc getCenterOffset(): Vector2 =
-    Vector2(x: getScreenWidth().float32 / 2.0, y: getScreenHeight().float32 / 2.0)
-
-proc updateCamera() =
-    let
-        deltaTime = getFrameTime()
-        elasticity = 5.0
-
-    PLAYER_CAMERA.target = lerp(PLAYER_CAMERA.target, PLAYER.pos, elasticity * deltaTime)
-
-    targetZoom = clamp(targetZoom + getMouseWheelMove() * 0.1f, 0.5f, 3.0f)
-
-    cameraZoom = lerp(cameraZoom, targetZoom, elasticity * deltaTime)
-
-    PLAYER_CAMERA.offset = getCenterOffset()
-    PLAYER_CAMERA.rotation = 0.0
-    PLAYER_CAMERA.zoom = cameraZoom
-
-proc drawMap() =
-    const
-        range = 16
-    
-    let
-        centerX = (PLAYER_CAMERA.target.x / MAP_SIZE).int
-        centerY = (PLAYER_CAMERA.target.y / MAP_SIZE).int
-    
-    for x in (centerX - range)..(centerX + range):
-        for y in (centerY - range)..(centerY + range):
-            let pos = Vector2(x: x.float32 * MAP_SIZE, y: y.float32 * MAP_SIZE)
-            drawTexture(MAP_LEVELS[SELECTED_MAP], pos, WHITE)
-
 proc drawUnits() =
     withLock MAP_UNITS_LOCK:
         for unit in MAP_UNITS:
@@ -45,7 +14,7 @@ proc spawnMonster() =
     
     if (currentTime - LAST_UNIT_SPAWN_TIME) < spawnInterval: return
     
-    let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
+    let screenBounds = Vector2(x: getScreenWidth().float32 / camera_zoom_current, y: getScreenHeight().float32 / camera_zoom_current)
     let spawnDistance = Vector2(x: screenBounds.x * 0.5 + 100.0, y: screenBounds.y * 0.5 + 100.0)
     
     let angle = rand(360).float32 * PI / 180.0
@@ -53,8 +22,8 @@ proc spawnMonster() =
     let primaryDistance = if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y
     
     let spawnPos = Vector2(
-        x: PLAYER_CAMERA.target.x + direction.x * primaryDistance,
-        y: PLAYER_CAMERA.target.y + direction.y * primaryDistance
+        x: player_camera.target.x + direction.x * primaryDistance,
+        y: player_camera.target.y + direction.y * primaryDistance
     )
     
     let batIndex = BAT.ord
@@ -243,7 +212,7 @@ proc drawGame() =
     updatePlayer()
     updateCamera()
 
-    mode2D(PLAYER_CAMERA):
+    mode2D(player_camera):
         drawMap()
         drawUnits()
     drawUI()
