@@ -2,8 +2,9 @@ proc getCenterOffset(): Vector2 =
     Vector2(x: getScreenWidth().float32 / 2.0, y: getScreenHeight().float32 / 2.0)
 
 proc updateCamera() =
-    let deltaTime = getFrameTime()
-    let elasticity = 5.0
+    let
+        deltaTime = getFrameTime()
+        elasticity = 5.0
 
     PLAYER_CAMERA.target = lerp(PLAYER_CAMERA.target, PLAYER.pos, elasticity * deltaTime)
 
@@ -16,10 +17,12 @@ proc updateCamera() =
     PLAYER_CAMERA.zoom = cameraZoom
 
 proc drawMap() =
-    let range = 16
+    const
+        range = 16
     
-    let centerX = (PLAYER_CAMERA.target.x / MAP_SIZE).int
-    let centerY = (PLAYER_CAMERA.target.y / MAP_SIZE).int
+    let
+        centerX = (PLAYER_CAMERA.target.x / MAP_SIZE).int
+        centerY = (PLAYER_CAMERA.target.y / MAP_SIZE).int
     
     for x in (centerX - range)..(centerX + range):
         for y in (centerY - range)..(centerY + range):
@@ -35,37 +38,38 @@ proc drawUnits() =
             drawAnimation(unit.animation, centeredPos)
 
 proc spawnMonster() =
-    if not MAP_UNITS_SPAWN_OVERLOADED:
-        let currentTime = times.getTime().toUnixFloat()
-        let spawnRate = GAME_RUN_TIME / 60
-        let spawnInterval = 1.0 / spawnRate
-        
-        if (currentTime - LAST_UNIT_SPAWN_TIME) >= spawnInterval:
-            let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
-            let spawnDistance = add(scale(screenBounds, 0.5), Vector2(x: 100.0, y: 100.0))
-            
-            let angle = rand(360).float32 * PI / 180.0
-            let direction = Vector2(x: cos(angle), y: sin(angle))
-            let offset = Vector2(
-                x: direction.x * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y),
-                y: direction.y * (if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y)
-            )
-            
-            let spawnPos = add(PLAYER_CAMERA.target, offset)
-            let batIndex = BAT.ord
-            var batAnimation = newAnimation(unitsBase[batIndex].animationdata, "IDLE")
-            let newBat = Unit(
-                class: BAT,
-                pos: spawnPos,
-                speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
-                attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
-                attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
-                animation: batAnimation,
-                hp: BASE_HP * unitsBase[batIndex].hp
-            )
-            
-            MAP_UNITS.add(newBat)
-            LAST_UNIT_SPAWN_TIME = currentTime
+    if MAP_UNITS_SPAWN_OVERLOADED: return
+    
+    let currentTime = times.getTime().toUnixFloat()
+    let spawnInterval = 1.0 / (GAME_RUN_TIME / 60.0)
+    
+    if (currentTime - LAST_UNIT_SPAWN_TIME) < spawnInterval: return
+    
+    let screenBounds = Vector2(x: getScreenWidth().float32 / cameraZoom, y: getScreenHeight().float32 / cameraZoom)
+    let spawnDistance = Vector2(x: screenBounds.x * 0.5 + 100.0, y: screenBounds.y * 0.5 + 100.0)
+    
+    let angle = rand(360).float32 * PI / 180.0
+    let direction = Vector2(x: cos(angle), y: sin(angle))
+    let primaryDistance = if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y
+    
+    let spawnPos = Vector2(
+        x: PLAYER_CAMERA.target.x + direction.x * primaryDistance,
+        y: PLAYER_CAMERA.target.y + direction.y * primaryDistance
+    )
+    
+    let batIndex = BAT.ord
+    let newBat = Unit(
+        class: BAT,
+        pos: spawnPos,
+        speed: BASE_MOVE_SPEED * unitsBase[batIndex].speed,
+        attackrange: BASE_ATTACK_RANGE * unitsBase[batIndex].attackrange,
+        attackdamage: BASE_ATTACK_DAMAGE * unitsBase[batIndex].attackdamage,
+        animation: newAnimation(unitsBase[batIndex].animationdata, "IDLE"),
+        hp: BASE_HP * unitsBase[batIndex].hp
+    )
+    
+    MAP_UNITS.add(newBat)
+    LAST_UNIT_SPAWN_TIME = currentTime
 
 proc getNearbyUnits(unit: Unit, radius: float): seq[Unit] =
     MAP_UNITS.filterIt(it != unit and distance(unit.pos, it.pos) <= radius and not (it.animation.name == "DEATH"))
