@@ -37,7 +37,7 @@ jobs:
 
       - name: Compile to Web (WASM)
         run: |
-          nimble install naylib nimja https://github.com/planetis-m/naygui -y
+          nimble install naylib nimja spacy https://github.com/planetis-m/naygui -y
           nim c -f -d:emscripten src/main.nim
 
       - name: Upload Web Artifact

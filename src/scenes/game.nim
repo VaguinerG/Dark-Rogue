@@ -9,22 +9,21 @@ proc drawUnits() =
 proc spawnMonster() =
     if MAP_UNITS_SPAWN_OVERLOADED: return
     
-    let currentTime = times.getTime().toUnixFloat()
-    let spawnInterval = 1.0 / (GAME_RUN_TIME / 60.0)
+    let
+        currentTime = times.getTime().toUnixFloat()
+        spawnInterval = 1.0 / (GAME_RUN_TIME / 0.1)
     
     if (currentTime - LAST_UNIT_SPAWN_TIME) < spawnInterval: return
     
-    let screenBounds = Vector2(x: getScreenWidth().float32 / camera_zoom_current, y: getScreenHeight().float32 / camera_zoom_current)
-    let spawnDistance = Vector2(x: screenBounds.x * 0.5 + 100.0, y: screenBounds.y * 0.5 + 100.0)
+    let
+        screenBounds = vec2(getScreenWidth().float32 / camera_zoom_current, 
+                           getScreenHeight().float32 / camera_zoom_current)
+        spawnRadius = max(screenBounds.x, screenBounds.y) * 0.6
     
-    let angle = rand(360).float32 * PI / 180.0
-    let direction = Vector2(x: cos(angle), y: sin(angle))
-    let primaryDistance = if abs(direction.x) > abs(direction.y): spawnDistance.x else: spawnDistance.y
-    
-    let spawnPos = Vector2(
-        x: player_camera.target.x + direction.x * primaryDistance,
-        y: player_camera.target.y + direction.y * primaryDistance
-    )
+    let 
+        angle = rand(360).float32.toRadians
+        direction = vec2(cos(angle), sin(angle))
+        spawnPos = PLAYER.pos.toVec2 + direction * spawnRadius
     
     let batIndex = BAT.ord
     let newBat = Unit(
@@ -41,7 +40,28 @@ proc spawnMonster() =
     LAST_UNIT_SPAWN_TIME = currentTime
 
 proc getNearbyUnits(unit: Unit, radius: float): seq[Unit] =
-    MAP_UNITS.filterIt(it != unit and distance(unit.pos, it.pos) <= radius and not (it.animation.name == "DEATH"))
+    var unitIndex = -1
+    for i, mapUnit in MAP_UNITS:
+        if mapUnit == unit:
+            unitIndex = i
+            break
+    
+    if unitIndex == -1:
+        return @[]
+    
+    let quadPos = worldToQuadPos(unit.pos)
+    let quadRadius = radius / (getScreenWidth().float32 / camera_zoom_current)
+    
+    let searchEntry = Entry(id: unitIndex.uint32, pos: quadPos)
+    
+    var nearbyUnits: seq[Unit] = @[]
+    for entry in unit_quadspace.findInRange(searchEntry, quadRadius):
+        if entry.id != unitIndex.uint32:
+            let nearbyUnit = MAP_UNITS[entry.id.int]
+            if distance(unit.pos, nearbyUnit.pos) <= radius and not (nearbyUnit.animation.name == "DEATH"):
+                nearbyUnits.add(nearbyUnit)
+    
+    return nearbyUnits
 
 proc moveUnitToUnit(unit: Unit, target: Unit) =
    let
@@ -62,7 +82,7 @@ proc moveUnitToUnit(unit: Unit, target: Unit) =
 
 proc isUnitMovable(unit: Unit): bool =
     if unit.animation.playOnce:
-        if unit.animation.finished:
+        if unit.animation.finished and unit.animation.name != "DEATH":
             unit.animation.name = "IDLE"
             unit.animation.playOnce = false
             unit.animation.finished = false
@@ -131,11 +151,26 @@ proc updateUnits() =
             release(MAP_UNITS_LOCK)
             LAST_UNIT_CLEANUP_TIME = times.getTime().toUnixFloat()
 
+    let bounds = rect(0, 0, 1, 1)
+    unit_quadspace = newQuadSpace(bounds, maxThings = 8, maxLevels = 6)
+
+    for i, unit in MAP_UNITS:
+        if unit.hp > 0 and isInCameraView(unit.pos):
+            let quadPos = worldToQuadPos(unit.pos)
+            if quadPos.x >= 0.0 and quadPos.x <= 1.0 and quadPos.y >= 0.0 and quadPos.y <= 1.0:
+                let entry = Entry(id: i.uint32, pos: quadPos)
+                unit_quadspace.insert(entry)
+    
+    unit_quadspace.finalize()
+
     for unit in MAP_UNITS:
         if unit.hp < 1 :
             continue
-        if unit.animation.color == RED: 
-            unit.animation.color = Color(r: 255, g: 255, b: 255, a: 255)
+        if unit.animation.color == RED:
+            if unit.animation.frame < 3:
+                inc(unit.animation.frame)
+            else:
+                unit.animation.color = Color(r: 255, g: 255, b: 255, a: 255)
         if unit.animation.name == "HIT" and unit.animation.finished:
             unit.animation.name = "IDLE"
             unit.animation.frame = 0
@@ -164,7 +199,7 @@ proc updateUnits() =
     let executionTime = endTime - startTime
     
     MAP_UNITS_SPAWN_OVERLOADED = executionTime > getFrameTime()
-    
+
 proc initGame() =
     initLock(MAP_UNITS_LOCK)
 

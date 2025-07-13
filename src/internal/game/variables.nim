@@ -1,9 +1,11 @@
 var
     player_camera: Camera2d
-    camera_zoom_target: float
-    camera_zoom_current: float
+    camera_zoom_target: float = 3.0
+    camera_zoom_current: float = 50.0
     camera_elasticity = 5.0
 
+var
+    unit_quadspace: QuadSpace
 
 var
     SELECTED_CHAR: UnitClass

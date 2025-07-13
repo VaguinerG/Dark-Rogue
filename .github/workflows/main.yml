@@ -26,7 +26,7 @@ jobs:
           version: master
     
       - name: Install Nim deps
-        run: nimble install naylib nimja https://github.com/planetis-m/naygui zigcc -y
+        run: nimble install naylib nimja spacy https://github.com/planetis-m/naygui zigcc -y
 
       - name: Install dependencies
         run: |
@@ -76,7 +76,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Nim deps
-        run: nimble install naylib nimja https://github.com/planetis-m/naygui -y
+        run: nimble install naylib nimja spacy https://github.com/planetis-m/naygui -y
 
       - name: Build macOS binary
         run: nim c -d:GraphicsApiOpenGlEs2 --passC:"-Ofast -flto -march=native" --passL:"-flto"  -o:src/bin/dark_rogue src/main.nim
@@ -113,7 +113,7 @@ jobs:
 
       - name: Build APK
         run: |
-          nimble install naylib nimja https://github.com/planetis-m/naygui -y
+          nimble install naylib nimja spacy https://github.com/planetis-m/naygui -y
           nimble setupAndroid
           nimble buildAndroid
 
@@ -143,7 +143,7 @@ jobs:
           version: master
           
       - name: Install Nim deps
-        run: nimble install naylib nimja https://github.com/planetis-m/naygui zigcc -y
+        run: nimble install naylib nimja spacy https://github.com/planetis-m/naygui zigcc -y
 
       - name: Build Windows binary
         run: |
