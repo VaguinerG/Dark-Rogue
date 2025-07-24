@@ -39,7 +39,7 @@ jobs:
           
       - name: Compile linux x64 x11
         run: |
-          nim c -f --cc:gcc --passC:"-fopt-info-vec-optimized -fmerge-all-constants -fno-semantic-interposition -ftree-vectorize -fipa-pta -funroll-loops -floop-nest-optimize -Ofast -march=x86_64-v3 -flto" --passL:"-Wl,-O2,--as-needed,--sort-common -flto -fuse-linker-plugin" -o:src/bin/dark_rogue src/main.nim
+          nim c -f --cc:gcc --passC:"-fopt-info-vec-optimized -fmerge-all-constants -fno-semantic-interposition -ftree-vectorize -fipa-pta -funroll-loops -floop-nest-optimize -Ofast -march=x86-64-v3 -flto" --passL:"-Wl,-O2,--as-needed,--sort-common -flto -fuse-linker-plugin" -o:src/bin/dark_rogue src/main.nim
           upx --best --ultra-brute ./src/bin/*
           
 
@@ -52,7 +52,7 @@ jobs:
 
       - name: Compile linux x64 wayland
         run: |
-          nim c -f -d:wayland --cc:clang --passC:"-march=native -Ofast -flto" --passL:"-flto" --clang.exe="zigcc" --clang.linkerexe="zigcc" -o:src/bin/dark_rogue src/main.nim
+          nim c -f -d:wayland --cc:gcc --passC:"-fopt-info-vec-optimized -fmerge-all-constants -fno-semantic-interposition -ftree-vectorize -fipa-pta -funroll-loops -floop-nest-optimize -Ofast -march=x86-64-v3 -flto" --passL:"-Wl,-O2,--as-needed,--sort-common -flto -fuse-linker-plugin" -o:src/bin/dark_rogue src/main.nim
           upx --best --ultra-brute ./src/bin/*
 
       - name: Upload Linux Artifact
