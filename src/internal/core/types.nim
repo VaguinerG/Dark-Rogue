@@ -1,3 +1,3 @@
 type
-    GameScenes = enum
+    GameScenes* = enum
         Logos

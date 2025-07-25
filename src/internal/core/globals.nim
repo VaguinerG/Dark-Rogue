@@ -1,2 +1,4 @@
+import types
+
 var
-    currentScene: GameScenes = Logos
+    currentScene*: GameScenes = Logos
